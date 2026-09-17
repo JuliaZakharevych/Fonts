@@ -266,6 +266,17 @@
 #ki-map-embed #ki-notes-layer{position:absolute;left:0;right:0;top:0;bottom:0;
   pointer-events:none;overflow:hidden;z-index:5}
 #ki-map-embed #ki-notes-layer .callout{pointer-events:auto}
+
+/* Numbered notes: the pin on the map and the number in the list are
+   the same mark, so the reader can tell what each note points at. */
+@media (max-width:560px){
+  #ki-map-embed #ki-notes-mobile .n{padding:0 0 0 24px !important}
+  #ki-map-embed #ki-notes-mobile .n:before{display:none !important}
+  #ki-map-embed #ki-notes-mobile .n .num{
+    position:absolute;left:0;top:0;width:17px;height:17px;border-radius:50%;
+    background:#0B3CEA;color:#fff;font-size:10.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;line-height:1}
+}
 </style>
 
 <div id="ki-map-embed">
@@ -874,7 +885,27 @@ function buildAnnotations(map){
 
     /* callouts + leaders — skipped entirely on a phone, where the
        notes live in the list under the map instead */
-    if (kiIsNarrow()){ boxes.forEach(b=>{ b.el.style.display="none"; }); svg.appendChild(frag); return; }
+    if (kiIsNarrow()){
+      /* A bare list under the map does not say what it refers to. Put a
+         numbered pin on the thing itself and the same number in front
+         of the note, so the two read as one. */
+      boxes.forEach(b=>{ b.el.style.display="none"; });
+      const cx0 = h.reduce((a,p)=>a+p[0],0)/h.length;
+      const cy0 = h.reduce((a,p)=>a+p[1],0)/h.length;
+      const tipX = tips.length ? tips.reduce((a,p)=>a+p[0],0)/tips.length : 0;
+      const tipY = tips.length ? tips.reduce((a,p)=>a+p[1],0)/tips.length : 0;
+      const pins = [[cx0,cy0],[tipX+22,tipY-16]];
+      pins.forEach(function(p,i){
+        if(!isFinite(p[0])||!isFinite(p[1])) return;
+        add("circle",{cx:p[0],cy:p[1],r:10,fill:COLORS.blue,stroke:"#FFFFFF","stroke-width":2.2});
+        const t=add("text",{x:p[0],y:p[1]+4,"text-anchor":"middle",
+          "font-size":"12","font-weight":"700",fill:"#FFFFFF",
+          "font-family":"'e-Ukraine',-apple-system,sans-serif"});
+        t.textContent=String(i+1);
+      });
+      svg.appendChild(frag);
+      return;
+    }
     boxes.forEach(b=>{
       const a=map.project(b.cfg.anchor);
       const sRect=overlay.getBoundingClientRect();
@@ -1016,7 +1047,7 @@ function buildAnnotations(map){
     for (var i=0;i<NOTES.length;i++){
       var row = document.createElement("div");
       row.className = "n";
-      row.innerHTML = NOTES[i].html;
+      row.innerHTML = '<span class="num">' + (i+1) + '</span>' + NOTES[i].html;
       list.appendChild(row);
     }
     var foot = wrap.querySelector("footer");
@@ -1116,10 +1147,6 @@ function buildAnnotations(map){
 </script>
 
 <script>
-/* Report our height to the host page so the iframe can size itself.
-   Coarse on purpose: rounding to 10px and ignoring small changes keeps
-   this from nudging the layout, which used to keep the map permanently
-   resizing and stop it ever finishing its load. */
 (function(){
   var last = 0;
   function report(){
