@@ -7,9 +7,6 @@
 <meta name="robots" content="noindex">
 <style>
   html,body{margin:0;padding:0;background:#fff}
-  /* Inside an iframe the map height must come from the WIDTH: the host
-     sets the iframe height from our content, so a vh-based height would
-     chase its own tail. */
   #ki-map-embed{height:auto !important;margin:0 !important}
   #ki-map-embed #stage{height:min(620px, max(360px, 64vw)) !important;min-height:360px !important}
 </style>
@@ -482,11 +479,19 @@ map.on("dragstart",()=>map._userMoved=true);
 map.on("zoomstart",e=>{ if(e.originalEvent) map._userMoved=true; });
 
 let resizeTimer=null;
+let kiLastW = 0, kiLastH = 0, kiFits = 0;
 const refit = () => {
   map.resize();
-  if (!map._userMoved){
-    map.fitBounds(kiBounds(),{padding:paddingFor(stageEl.clientWidth,stageEl.clientHeight),duration:0});
-  }
+  if (map._userMoved) return;
+  const w = stageEl.clientWidth, h = stageEl.clientHeight;
+  /* Re-fitting on every observed resize fights with the host page's own
+     height adjustments: each fit nudges the layout, the layout nudges
+     the observer, and the map never settles long enough to finish
+     loading. Only re-fit on a real size change, and not for ever. */
+  if (Math.abs(w - kiLastW) < 8 && Math.abs(h - kiLastH) < 8) return;
+  if (kiFits > 6) return;
+  kiLastW = w; kiLastH = h; kiFits++;
+  map.fitBounds(kiBounds(),{padding:paddingFor(w,h),duration:0});
 };
 if (typeof ResizeObserver !== "undefined"){
   new ResizeObserver(()=>{
@@ -520,7 +525,19 @@ map.on("load", function(){
   setTimeout(function(){ map.resize(); }, 800);
 });
 
-map.on("load", () => {
+/* "load" is not guaranteed: if anything keeps the map busy — a resize
+   loop, a slow sprite — it never fires, and then none of our layers
+   are ever added and the frame stays an empty basemap. Hang the work
+   off whichever of the three events arrives first instead. */
+var kiLayersAdded = false;
+function kiAddAll(){
+  if (kiLayersAdded) return;
+  kiLayersAdded = true;
+  try { kiAddAllInner(); }
+  catch(err){ kiLayersAdded = false; console.error("KI map: layers —", err);
+              kiMsg("layers failed: " + (err && err.message ? err.message : err)); }
+}
+function kiAddAllInner(){
   const BEFORE = map.getLayer("water-label") ? "water-label" : undefined;
 
   /* --- quieten the basemap: our own labels take over ---------------- */
@@ -693,7 +710,11 @@ map.on("load", () => {
 
   try { buildAnnotations(map); }
   catch(e){ console.error("KI map: annotations —", e); kiMsg("notes failed: " + (e && e.message ? e.message : e)); }
-});
+}
+map.on("load", kiAddAll);
+map.on("style.load", kiAddAll);
+map.on("idle", kiAddAll);
+if (map.isStyleLoaded && map.isStyleLoaded()) kiAddAll();
 
 /* ------------------------------------------------------------------ *
  *  ANNOTATION OVERLAY (arrows, cluster halo, callouts)
@@ -1043,18 +1064,25 @@ function buildAnnotations(map){
   /* The article's framework can re-render and take our canvas with it,
      which is what makes the map show up and then vanish. Watch for
      that and rebuild, for the first minute. */
+  /* Every rebuild is a fresh Map object, and Mapbox counts each one as
+     a billable map load against the account's monthly allowance. So
+     heal a couple of times, then stop — a rebuild loop would quietly
+     burn through the quota one reader at a time. */
+  var kiRebuilds = 0, kiHealTimer = null;
   function kiRestart(){
     var root = kiRoot();
     if (!root || root.querySelector(".mapboxgl-canvas")) return;
     if (location.protocol === "about:" || typeof mapboxgl === "undefined") return;
+    if (kiRebuilds >= 3) { clearInterval(kiHealTimer); return; }
+    kiRebuilds++;
     try { if (window.__kiMap && window.__kiMap.remove) window.__kiMap.remove(); } catch(e){}
     window.__kiMap = null;
     window.__kiStarting = false;
     try { start(MAPBOX_TOKEN); } catch(e){ console.error("KI map rebuild:", e); }
   }
   var kiHeals = 0;
-  var kiHealTimer = setInterval(function(){
-    if (++kiHeals > 30) { clearInterval(kiHealTimer); return; }
+  kiHealTimer = setInterval(function(){
+    if (++kiHeals > 20) { clearInterval(kiHealTimer); return; }
     kiRestart();
   }, 2000);
   document.addEventListener("visibilitychange", function(){
@@ -1088,23 +1116,22 @@ function buildAnnotations(map){
 </script>
 
 <script>
-/* Tell the host page our real height so the iframe can size itself. */
+/* Report our height to the host page so the iframe can size itself.
+   Coarse on purpose: rounding to 10px and ignoring small changes keeps
+   this from nudging the layout, which used to keep the map permanently
+   resizing and stop it ever finishing its load. */
 (function(){
   var last = 0;
   function report(){
     var el = document.getElementById("ki-map-embed") || document.body;
-    var h = Math.ceil(el.getBoundingClientRect().height) + 2;
-    if (!h || Math.abs(h - last) < 2) return;
+    var h = Math.ceil(el.getBoundingClientRect().height / 10) * 10;
+    if (!h || Math.abs(h - last) < 10) return;
     last = h;
     try { parent.postMessage({ kind: "ki-map-height", height: h }, "*"); } catch(e){}
   }
-  window.addEventListener("load", function(){ report(); setTimeout(report,400); setTimeout(report,1500); });
-  window.addEventListener("resize", function(){ setTimeout(report,120); });
-  if (typeof ResizeObserver !== "undefined") {
-    var el = document.getElementById("ki-map-embed");
-    if (el) new ResizeObserver(report).observe(el);
-  }
-  setTimeout(report, 60);
+  window.addEventListener("load", function(){ report(); setTimeout(report,600); setTimeout(report,2500); });
+  window.addEventListener("resize", function(){ setTimeout(report,200); });
+  setTimeout(report, 300);
 })();
 </script>
 </body>
