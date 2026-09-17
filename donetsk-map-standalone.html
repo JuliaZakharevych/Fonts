@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ukrainian counterattacks in northern Donetsk Oblast — The Kyiv Independent</title>
+<meta name="robots" content="noindex">
+<style>
+  html,body{margin:0;padding:0;background:#fff}
+  /* Inside an iframe the map height must come from the WIDTH: the host
+     sets the iframe height from our content, so a vh-based height would
+     chase its own tail. */
+  #ki-map-embed{height:auto !important;margin:0 !important}
+  #ki-map-embed #stage{height:min(620px, max(360px, 64vw)) !important;min-height:360px !important}
+</style>
+</head>
+<body>
+<!-- ============================================================
+     KI interactive map — Ukrainian counterattacks, Sept. 15, 2026
+     Paste this into ONE Ghost HTML card. Do not add a second copy:
+     the element ids must be unique on the page.
+     ============================================================ -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+<style>
+#ki-map-embed{height:clamp(560px,78vh,780px);display:block;color:#111}
+@font-face{
+    font-family:'e-Ukraine';
+    src:url('https://raw.githubusercontent.com/JuliaZakharevych/Fonts/main/e-Ukraine-Light.woff2') format('woff2');
+    font-weight:300; font-style:normal; font-display:swap;
+  }
+@font-face{
+    font-family:'e-Ukraine';
+    src:url('https://raw.githubusercontent.com/JuliaZakharevych/Fonts/main/e-Ukraine-Regular.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+@font-face{
+    font-family:'e-Ukraine';
+    src:url('https://raw.githubusercontent.com/JuliaZakharevych/Fonts/main/e-Ukraine-Bold.woff2') format('woff2');
+    font-weight:700; font-style:normal; font-display:swap;
+  }
+@font-face{
+    font-family:'e-Ukraine Head';
+    src:url('https://raw.githubusercontent.com/JuliaZakharevych/Fonts/main/e-UkraineHead-Bold.woff2') format('woff2');
+    font-weight:700; font-style:normal; font-display:swap;
+  }
+#ki-map-embed{--ki-blue:#0B3CEA;
+    --ki-orange:#E8540A;
+    --ink:#111111;
+    --muted:#666666;
+    --hair:#E2E2DC;
+    --occ:#D9605B;
+    --grey:#A89C94;}
+#ki-map-embed *{margin:0;padding:0;box-sizing:border-box}
+#ki-map-embed{font-family:'e-Ukraine',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    color:var(--ink);background:#ffffff;
+    -webkit-font-smoothing:antialiased;}
+#ki-map-embed #wrap{display:flex;flex-direction:column;height:100%;min-height:560px}
+#ki-map-embed header{padding:18px 22px 12px;border-bottom:1px solid var(--hair);flex:0 0 auto;position:relative}
+#ki-map-embed .ki-map-title{font-family:'e-Ukraine Head','e-Ukraine',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+#ki-map-embed .ki-map-sub{font-family:'e-Ukraine','e-Ukraine Head',sans-serif;font-size:15px;font-weight:400;color:#333;margin-top:8px}
+#ki-map-embed .ki-map-rule{height:3px;width:56px;background:var(--ki-blue);margin-bottom:10px}
+#ki-map-embed footer.srcRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px 22px;border-top:1px solid var(--hair);flex:0 0 auto}
+#ki-map-embed footer p.src{font-size:12px;color:var(--muted)}
+#ki-map-embed footer .logo{height:20px;width:auto;flex:0 0 auto;opacity:.92}
+#ki-map-embed #stage{position:relative;flex:1 1 auto;min-height:420px}
+#ki-map-embed #map{position:absolute;inset:0}
+#ki-map-embed #overlay{position:absolute;inset:0;pointer-events:none;z-index:4}
+#ki-map-embed #overlay svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#ki-map-embed .callout{position:absolute;pointer-events:auto;
+    background:rgba(255,255,255,.96);
+    border:1px solid #DADAD2;
+    border-left:3px solid var(--ki-blue);
+    border-radius:3px;
+    padding:9px 12px;
+    font-size:12.5px;line-height:1.35;
+    max-width:240px;
+    box-shadow:0 1px 6px rgba(0,0,0,.12);
+    z-index:5;
+    transform:translate(-50%,-50%);
+    white-space:normal;}
+#ki-map-embed .callout b{font-weight:700}
+#ki-map-embed .callout .sub{display:block;color:var(--muted);font-size:11.5px;margin-top:3px}
+#ki-map-embed #legend{position:absolute;left:14px;bottom:14px;z-index:3;
+    background:rgba(255,255,255,.95);border:1px solid #DADAD2;border-radius:3px;
+    padding:11px 13px;font-size:12px;line-height:1.5;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+#ki-map-embed #legend .row{display:flex;align-items:center;gap:8px;white-space:nowrap}
+#ki-map-embed #legend .sw{width:16px;height:11px;border-radius:2px;flex:0 0 auto}
+#ki-map-embed #legend .dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin:0 3px}
+#ki-map-embed #legend .arw{width:16px;height:11px;flex:0 0 auto;display:flex;align-items:center}
+#ki-map-embed #locator{position:absolute;right:14px;bottom:14px;z-index:3;
+    padding:0;}
+#ki-map-embed #locator svg{display:block;width:104px;height:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+#ki-map-embed #locator .cap{font-size:9.5px;color:var(--muted);text-align:center;margin-top:2px;
+    letter-spacing:.03em;text-transform:uppercase;
+    text-shadow:0 1px 2px #fff,0 -1px 2px #fff,1px 0 2px #fff,-1px 0 2px #fff;}
+#ki-map-embed #tools{position:absolute;right:12px;top:12px;z-index:3;display:flex;gap:6px}
+#ki-map-embed #tools button{font-family:inherit;font-size:12px;padding:6px 11px;border:1px solid #DADAD2;
+    background:rgba(255,255,255,.95);border-radius:3px;cursor:pointer;color:#333;}
+#ki-map-embed #tools button:hover{border-color:var(--ki-blue);color:var(--ki-blue)}
+#ki-map-embed #tip{position:absolute;z-index:5;pointer-events:none;display:none;
+    background:#111;color:#fff;font-size:12px;padding:5px 8px;border-radius:3px;
+    transform:translate(-50%,-150%);white-space:nowrap;}
+#ki-map-embed #tokengate{position:absolute;inset:0;z-index:20;background:#F5F5F2;
+    display:flex;align-items:center;justify-content:center;}
+#ki-map-embed #tokengate .box{max-width:420px;padding:26px;text-align:left}
+#ki-map-embed #tokengate h3{font-size:16px;font-weight:900;margin-bottom:8px}
+#ki-map-embed #tokengate p{font-size:13px;color:#444;line-height:1.5;margin-bottom:12px}
+#ki-map-embed #tokengate input{width:100%;font-family:inherit;font-size:13px;padding:9px 10px;
+    border:1px solid #CFCFC7;border-radius:3px;margin-bottom:10px;}
+#ki-map-embed #tokengate button{font-family:inherit;font-size:13px;font-weight:700;padding:9px 18px;border:0;
+    background:var(--ki-blue);color:#fff;border-radius:3px;cursor:pointer;}
+#ki-map-embed #tokengate code{background:#EDEDE7;padding:1px 4px;border-radius:2px;font-size:12px}
+#ki-map-embed .mapboxgl-ctrl-logo{opacity:.6}
+@supports (height:100dvh){
+
+}
+@media (max-width:760px){
+#ki-map-embed header{padding:14px 16px 10px}
+#ki-map-embed .ki-map-title{font-size:19px}
+#ki-map-embed .ki-map-sub{font-size:13.5px}
+#ki-map-embed .callout{max-width:190px;font-size:11.5px;padding:7px 9px}
+#ki-map-embed #legend{font-size:11px;padding:9px 10px;left:8px;bottom:8px}
+#ki-map-embed #locator{right:8px;bottom:8px}
+#ki-map-embed #locator svg{width:80px}
+#ki-map-embed #locator .cap{font-size:8.5px}
+#ki-map-embed #tools{right:8px;top:8px;gap:5px}
+#ki-map-embed #tools button{font-size:11px;padding:5px 9px}
+#ki-map-embed footer.srcRow{padding:12px 16px 16px;gap:10px}
+#ki-map-embed footer p.src{font-size:11px}
+#ki-map-embed footer .logo{height:14px}
+}
+@media (max-width:420px){
+#ki-map-embed header{padding:12px 14px 9px}
+#ki-map-embed .ki-map-title{font-size:17px}
+#ki-map-embed .ki-map-sub{font-size:12.5px}
+#ki-map-embed .ki-map-rule{width:44px}
+#ki-map-embed #legend{font-size:10px;padding:8px 9px;line-height:1.4}
+#ki-map-embed #locator svg{width:64px}
+#ki-map-embed #locator .cap{display:none}
+#ki-map-embed #legend .row{gap:6px}
+#ki-map-embed #tools{flex-direction:column;align-items:flex-end}
+#ki-map-embed footer.srcRow{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px 16px}
+#ki-map-embed footer .logo{height:12px;align-self:flex-end}
+#ki-map-embed #tokengate .box{padding:18px;max-width:100%}
+#ki-map-embed #tokengate h3{font-size:14.5px}
+#ki-map-embed #tokengate p{font-size:12.5px}
+}
+
+/* ---------- layout fixes ----------------------------------------
+   1. The embed sized itself with a fixed height, so on a narrow
+      column the footer spilled out of the block and landed on top
+      of the paragraph below. Height now lives on the map itself and
+      the block grows to fit header + map + footer.
+   2. The site forces width:100% on images inside article content,
+      which blew the logo up and pushed it off the right edge.
+   ---------------------------------------------------------------- */
+#ki-map-embed{height:auto !important;margin:0 0 30px}
+#ki-map-embed #wrap{height:auto !important;min-height:0 !important}
+#ki-map-embed #stage{height:clamp(380px,66vh,620px) !important;min-height:380px !important;flex:0 0 auto !important}
+
+#ki-map-embed footer{flex-wrap:wrap;row-gap:8px;align-items:flex-end}
+#ki-map-embed footer p{margin:0;flex:1 1 220px;min-width:0}
+/* Ghost strips class="logo" off the <img>, so target the element itself */
+#ki-map-embed footer img{
+  height:15px !important;
+  width:auto !important;
+  max-width:none !important;
+  min-width:0;
+  flex:0 0 auto;
+  display:block;
+  object-fit:contain;
+  margin:0 !important;
+}
+@media (max-width:760px){
+  #ki-map-embed footer img{height:12px !important;max-width:none !important}
+}
+@media (max-width:420px){
+  #ki-map-embed footer img{height:10px !important;max-width:none !important}
+}
+
+/* The header used <h1>/<h2>/.rule — generic names the site's own
+   article CSS was free to hide or restyle, and it did. They are now
+   namespaced divs, forced visible, with the type set here. */
+#ki-map-embed header{display:block !important}
+#ki-map-embed .ki-map-rule{display:block !important;height:3px !important;width:56px;
+  background:#0B3CEA !important;margin:0 0 10px !important;border:0;padding:0}
+#ki-map-embed .ki-map-title{display:block !important;visibility:visible !important;
+  font-family:'e-Ukraine Head','e-Ukraine',-apple-system,sans-serif !important;
+  font-size:23px !important;font-weight:700 !important;line-height:1.15 !important;
+  letter-spacing:-.01em;color:#111 !important;margin:0 !important;padding:0 !important;
+  text-transform:none !important}
+#ki-map-embed .ki-map-sub{display:block !important;visibility:visible !important;
+  font-family:'e-Ukraine',-apple-system,sans-serif !important;
+  font-size:15px !important;font-weight:400 !important;color:#333 !important;
+  margin:8px 0 0 !important;padding:0 !important;line-height:1.35 !important;
+  text-transform:none !important}
+@media (max-width:760px){
+  #ki-map-embed .ki-map-title{font-size:19px !important}
+  #ki-map-embed .ki-map-sub{font-size:13.5px !important}
+}
+@media (max-width:420px){
+  #ki-map-embed .ki-map-title{font-size:17px !important}
+  #ki-map-embed .ki-map-sub{font-size:12.5px !important}
+  #ki-map-embed .ki-map-rule{width:44px}
+}
+
+/* Flush the header and footer to the map's own edges: the block had
+   22px side padding on the text while the map ran edge to edge, so
+   the title, the source line and the logo all sat inset from it.
+   Vertical padding trimmed too. */
+#ki-map-embed header{padding:0 0 11px !important}
+#ki-map-embed footer{padding:11px 0 0 !important}
+#ki-map-embed .ki-map-rule{margin:0 0 9px !important}
+@media (max-width:760px){
+  #ki-map-embed header{padding:0 0 9px !important}
+  #ki-map-embed footer{padding:9px 0 0 !important}
+}
+@media (max-width:420px){
+  #ki-map-embed header{padding:0 0 8px !important}
+  #ki-map-embed footer{padding:8px 0 0 !important}
+  #ki-map-embed .ki-map-rule{margin:0 0 7px !important}
+}
+
+/* Nothing may escape the map frame. A note whose anchor is panned off
+   screen used to be drawn out over the article. */
+#ki-map-embed #stage{overflow:hidden !important}
+#ki-map-embed #overlay{overflow:hidden !important}
+
+/* Notes have to be much smaller on a phone: a 190px box on a 396px map
+   covers half the picture. */
+@media (max-width:560px){
+  #ki-map-embed .callout{max-width:145px !important;font-size:10.5px !important;
+    line-height:1.28 !important;padding:6px 8px !important;border-left-width:2px !important}
+  #ki-map-embed .callout .sub{font-size:9.5px !important;margin-top:2px !important}
+  #ki-map-embed #legend{font-size:9.5px !important;padding:7px 8px !important;line-height:1.35 !important}
+  #ki-map-embed #legend .sw{width:12px !important;height:9px !important}
+  #ki-map-embed #legend .dot{width:8px !important;height:8px !important}
+  #ki-map-embed #tools button{font-size:10.5px !important;padding:4px 8px !important}
+}
+@media (max-width:400px){
+  #ki-map-embed .callout{max-width:128px !important;font-size:9.5px !important;padding:5px 7px !important}
+}
+
+/* On a phone a floating note is hopeless: the box is a third of the
+   picture, it collides with the legend, and hiding it when its anchor
+   leaves the frame just makes it flicker. Below 560px the notes move
+   out from on top of the map into a short list underneath it, and the
+   map keeps only the arrows and the halo. */
+#ki-map-embed #ki-notes-mobile{display:none}
+@media (max-width:560px){
+  #ki-map-embed .callout{display:none !important}
+  #ki-map-embed #ki-notes-mobile{display:block;padding:9px 0 0}
+  #ki-map-embed #ki-notes-mobile .n{position:relative;padding:0 0 0 10px;margin:0 0 6px;
+    font-size:11px;line-height:1.35;color:#1A1A18}
+  #ki-map-embed #ki-notes-mobile .n:last-child{margin-bottom:0}
+  #ki-map-embed #ki-notes-mobile .n:before{content:"";position:absolute;left:0;top:2px;bottom:2px;
+    width:2px;background:#0B3CEA;border-radius:1px}
+  #ki-map-embed #ki-notes-mobile .n b{font-weight:700}
+  #ki-map-embed #ki-notes-mobile .n .sub{color:#666}
+}
+
+/* Stacking, bottom to top: map, arrows + halo, legend/buttons/inset,
+   notes. The arrows belong under the legend; the notes on top of it. */
+#ki-map-embed #overlay{z-index:1 !important}
+#ki-map-embed #legend,
+#ki-map-embed #tools,
+#ki-map-embed #locator{z-index:3 !important}
+#ki-map-embed #ki-notes-layer{position:absolute;left:0;right:0;top:0;bottom:0;
+  pointer-events:none;overflow:hidden;z-index:5}
+#ki-map-embed #ki-notes-layer .callout{pointer-events:auto}
+</style>
+
+<div id="ki-map-embed">
+<div id="wrap">
+  <header>
+    <div class="ki-map-rule"></div>
+    <div class="ki-map-title">Ukrainian counterattacks in northern Donetsk Oblast</div>
+    <div class="ki-map-sub">Stated and reported gains as of Sept. 15, 2026</div>
+  </header>
+
+  <div id="stage">
+    <div id="map"></div>
+    <div id="overlay"><svg id="svg"></svg></div>
+    <div id="tip"></div>
+
+    <div id="tools">
+      <button id="btn-reset">Reset view</button>
+      <button id="btn-ann">Hide notes</button>
+    </div>
+
+    <div id="legend">
+      <div class="row"><span class="sw" style="background:#D9605B;opacity:.78"></span> Russian-occupied territory, Sept. 15</div>
+      <div class="row"><span class="sw" style="background:#A89C94;opacity:.7"></span> Contested / status unknown</div>
+      <div class="row"><span class="dot" style="background:#0B3CEA;box-shadow:0 0 0 2px #fff"></span> Reported cleared by 3rd Army Corps</div>
+      <div class="row"><span class="arw"><svg width="16" height="11"><path d="M0,5.5 L11,5.5" stroke="#0B3CEA" stroke-width="2.4" fill="none"/><path d="M10,1.5 L16,5.5 L10,9.5 Z" fill="#0B3CEA"/></svg></span> Reported axis of continued attacks</div>
+    </div>
+
+    <div id="locator">
+      <svg viewBox="0 0 138.00 94.06" xmlns="http://www.w3.org/2000/svg">
+        <path d="M85.65,3.34 L84.01,3.00 L81.91,4.41 L77.84,3.52 L77.29,5.94 L74.60,6.75 L74.22,5.97 L71.41,5.77 L70.16,5.99 L69.61,6.65 L67.50,7.14 L66.04,8.19 L64.43,11.89 L65.33,14.04 L63.21,14.73 L61.70,12.75 L59.35,13.35 L57.95,12.68 L55.63,14.06 L54.46,11.44 L51.82,12.22 L48.41,12.27 L44.73,11.33 L40.60,11.61 L39.75,9.75 L37.58,9.83 L34.30,8.71 L29.62,7.86 L25.01,7.63 L21.96,8.36 L19.53,8.39 L18.46,10.17 L16.54,11.63 L14.84,10.99 L13.95,12.23 L14.20,12.80 L14.00,14.73 L15.67,16.46 L16.03,18.02 L17.72,19.67 L17.46,23.15 L16.54,24.65 L14.07,25.67 L10.09,29.59 L6.72,34.31 L7.43,37.10 L7.02,38.36 L8.19,39.09 L8.38,40.03 L5.98,39.34 L4.30,43.65 L3.04,44.88 L3.00,46.70 L4.02,46.71 L4.64,48.48 L6.46,50.09 L7.49,49.88 L8.45,51.75 L10.37,50.08 L12.72,51.48 L13.47,51.10 L16.74,51.59 L18.36,52.30 L19.67,51.69 L21.31,52.17 L23.24,54.36 L24.58,54.00 L25.91,52.28 L32.58,51.24 L33.54,48.82 L36.29,47.52 L37.01,47.13 L41.59,46.63 L43.23,46.19 L44.39,46.29 L47.55,48.87 L48.58,48.53 L51.81,49.93 L52.92,51.88 L54.19,51.43 L55.03,53.85 L54.14,56.31 L56.28,59.10 L57.36,58.61 L57.38,62.78 L60.08,64.28 L60.24,66.83 L61.20,69.08 L59.35,69.47 L56.81,68.52 L54.75,69.27 L54.63,67.28 L52.89,68.20 L53.40,71.20 L52.97,73.19 L51.38,73.72 L51.37,75.00 L49.43,76.98 L49.64,78.62 L47.94,78.48 L48.06,79.58 L48.38,80.67 L51.84,81.54 L55.64,79.34 L58.05,80.42 L57.72,78.96 L59.16,76.10 L60.54,74.89 L61.62,75.20 L64.23,72.32 L66.26,68.84 L66.40,67.11 L69.10,66.28 L70.40,66.58 L72.87,66.01 L77.07,66.51 L77.58,68.09 L75.31,68.26 L74.42,69.68 L77.17,71.80 L78.94,72.37 L80.86,71.71 L84.89,71.76 L87.65,74.15 L81.61,77.29 L78.78,79.73 L79.01,80.48 L81.84,80.33 L84.48,82.51 L86.51,82.94 L87.11,84.99 L86.35,88.26 L87.30,90.57 L89.44,91.06 L92.32,89.24 L93.33,87.21 L95.44,86.21 L97.81,86.51 L100.93,82.98 L103.43,84.32 L106.19,84.15 L107.76,83.49 L107.66,81.46 L108.93,79.59 L105.41,79.19 L100.74,80.95 L99.65,80.14 L97.54,76.85 L96.30,74.02 L95.88,71.16 L97.44,70.43 L98.75,68.84 L99.72,69.51 L103.82,66.01 L106.76,65.94 L107.47,65.23 L110.79,64.38 L113.53,62.88 L114.32,63.48 L115.87,61.29 L120.77,61.05 L120.68,60.07 L121.08,57.85 L121.34,55.98 L121.77,55.49 L124.57,54.72 L125.27,52.83 L131.88,53.19 L132.19,52.73 L132.34,51.59 L133.78,48.15 L132.63,44.84 L131.14,44.69 L132.22,42.26 L131.50,39.91 L133.24,39.61 L135.00,36.46 L133.82,33.43 L132.38,34.16 L130.59,32.16 L128.42,31.93 L127.65,30.51 L125.43,30.59 L121.79,29.33 L119.19,30.22 L117.19,28.25 L116.25,25.91 L114.90,24.35 L110.76,25.55 L108.89,26.86 L106.51,26.01 L105.32,24.47 L103.35,24.45 L102.32,25.31 L100.33,23.60 L100.65,21.74 L99.26,18.17 L97.80,15.80 L94.84,16.24 L92.16,14.40 L90.55,10.74 L92.92,9.52 L90.60,7.60 L90.35,6.51 L90.44,5.53 L90.18,5.01 L88.28,3.10 L86.31,3.90 L85.65,3.34 Z"
+              fill="#EDEDE7" stroke="#ACA89E" stroke-width="0.6"/>
+        <circle cx="117.98" cy="39.04" r="4.4" fill="none" stroke="#0B3CEA" stroke-width="1.3"/>
+        <circle cx="117.98" cy="39.04" r="1.5" fill="#0B3CEA"/>
+      </svg>
+      <div class="cap">Ukraine</div>
+    </div>
+
+    </div>
+
+  <footer class="srcRow">
+    <p class="src">Source: DeepState Map, official Ukrainian military statements</p>
+    <img class="logo" src="https://kyivindependent.com/assets/images/logo.svg" alt="The Kyiv Independent">
+  </footer>
+</div>
+</div>
+
+<script>
+(function(){
+  if (window.__kiMapBooted) return;   /* never run twice */
+  window.__kiMapBooted = true;
+
+/* Every lookup is scoped to this embed. The ids in here — map, stage,
+   overlay, tip, legend, tools — are generic enough that the site has
+   its own, and document.getElementById() hands back whichever comes
+   first in the DOM. That is how the map built itself into someone
+   else's element and left our frame blank on mobile. */
+function kiRoot(){ return document.getElementById("ki-map-embed"); }
+function kiEl(id){ var r = kiRoot(); return r ? r.querySelector("#" + id) : null; }
+
+
+
+/* ------------------------------------------------------------------ *
+ *  CONFIG — everything editable lives here
+ * ------------------------------------------------------------------ */
+
+const MAPBOX_TOKEN = "pk.eyJ1IjoieXpha2hhcmV2eWNoIiwiYSI6ImNtdTRnb2s2YjBtd2kyd3M3eTl0bXFyeWUifQ.6_qWaC-JbRJdcqTJfT-GlQ"; // <-- baked in
+const STYLE_URL    = "mapbox://styles/yzakharevych/cmu4hc4v9001p01sg0osab5kp";
+
+const VIEW = {
+  bounds: [[37.05, 48.78], [38.62, 49.42]],
+  /* On a phone the wide regional frame makes everything unreadable, so
+     zoom to the annotated area: the cleared cluster, both arrows and
+     the settlements they point at. */
+  narrowBounds: [[37.40, 48.94], [38.06, 49.29]],
+  padding: {top:40,right:40,bottom:40,left:40}
+};
+function kiIsNarrow(){ return (window.innerWidth || 9999) <= 560; }
+function kiBounds(){ return kiIsNarrow() ? VIEW.narrowBounds : VIEW.bounds; }
+
+/* Hard clamp on how far the user can pan/zoom out. Chosen to stay well
+   clear of the straight clip edges baked into the DEEPSTATE polygon data
+   (south ~48.45, north ~49.75, east ~39.2) so those artificial edges are
+   never reachable — they'd read as an unfinished/cut-off map. */
+const MAX_BOUNDS = [[36.72, 48.63], [38.95, 49.56]];
+
+const COLORS = {
+  occupied:  "#D9605B",
+  occupiedLine:"#B8423D",
+  grey:      "#A89C94",
+  urban:     "#C7C7BF",
+  river:     "#79B0D8",
+  highway:   "#F0C04A",
+  highwayCase:"#D4A331",
+  oblast:    "#8B8B82",
+  blue:      "#0B3CEA",
+  dot:       "#3E3E39"
+};
+
+/* Settlements. `kind`: "city" (urban area + bigger label),
+   "cleared" (blue dot, part of the 3rd Army Corps group),
+   "village" (plain dot).                                              */
+const PLACES = [
+  {n:"Izium",        kind:"city",    c:[37.2784,49.1913]},
+  {n:"Sloviansk",    kind:"city",    c:[37.6058,48.8523]},
+  {n:"Lyman",        kind:"city",    c:[37.8168,48.9801]},
+  {n:"Kreminna",     kind:"city",    c:[38.2179,49.0463]},
+  {n:"Siversk",      kind:"city",    c:[38.0902,48.8676]},
+
+  {n:"Korovii Yar",  kind:"cleared", c:[37.6234,49.1615]},
+  {n:"Krymky",       kind:"village", c:[37.5729,49.1388]},
+  {n:"Oleksandrivka",kind:"cleared", c:[37.5933,49.1160]},
+  {n:"Serednie",     kind:"cleared", c:[37.7047,49.1197]},
+  {n:"Shandryholove",kind:"village", c:[37.7221,49.1003]},
+  {n:"Novoselivka",  kind:"cleared", c:[37.6974,49.0754]},
+  {n:"Yarova",       kind:"cleared", c:[37.6395,49.0600]},
+  {n:"Sviatohirsk",  kind:"cleared", c:[37.5654,49.0356]},
+
+  {n:"Ridkodub",     kind:"village", c:[37.8043,49.1817]},
+  {n:"Nove",         kind:"village", c:[37.8298,49.1627]},
+  {n:"Zelena Dolyna",kind:"village", c:[37.8096,49.1294]},
+  {n:"Kolodiazi",    kind:"village", c:[37.8815,49.0831]},
+  {n:"Ivanivka",     kind:"village", c:[37.9469,49.1094]},
+  {n:"Terny",        kind:"village", c:[37.9626,49.0972]},
+  {n:"Yampolivka",   kind:"village", c:[37.9554,49.0715]},
+  {n:"Torske",       kind:"village", c:[37.9561,49.0235]},
+  {n:"Yampil",       kind:"village", c:[37.9601,48.9401]},
+  {n:"Raihorodok",   kind:"village", c:[37.7274,48.8978]},
+  {n:"Starodubivka", kind:"village", c:[37.7933,48.8895]}
+];
+
+/* River labels — placed along the line, name-matched against the basemap. */
+const RIVER_NAMES = ["Siverskyi Donets","Сіверський Донець","Oskil","Оскіл","Zherebets","Жеребець","Siverskyi Donets River"];
+
+/* Oblast labels */
+const OBLASTS = [
+  {n:"KHARKIV OBLAST", c:[37.12,49.34]},
+  {n:"DONETSK OBLAST", c:[37.62,48.86]},
+  {n:"LUHANSK OBLAST", c:[38.44,49.24]}
+];
+
+/* Annotation arrows: cubic beziers in lng/lat. */
+const ARROWS = [
+  { from:[37.640,49.187], c1:[37.720,49.196], c2:[37.790,49.168], to:[37.858,49.140] },
+  { from:[37.663,49.077], c1:[37.740,49.086], c2:[37.795,49.107], to:[37.856,49.114] }
+];
+
+/* Callout boxes: anchor is a map coordinate, offset is in pixels. */
+const NOTES = [
+  { id:"cleared",
+    anchor:[37.545,49.042], offset:[-96,86],
+    html:"<b>Settlements officially reported cleared/liberated by 3rd Army Corps</b>",
+    leaderTo:"hull" },
+  { id:"axis",
+    anchor:[38.06,49.205], offset:[54,-34],
+    html:"<b>Reported direction of continued offensive operations</b>",
+    leaderTo:"arrows" }
+];
+
+const DEEPSTATE = {"occupied":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"category":"occupied"},"geometry":{"type":"MultiPolygon","coordinates":[[[[37.2395648,48.4543476],[37.2496422,48.4557022],[37.2466742,48.4597869],[37.2812055,48.4730304],[37.2988671,48.4760212],[37.3393465,48.4737259],[37.3648609,48.4778166],[37.3674132,48.4824313],[37.3755561,48.484284],[37.3751165,48.4889811],[37.3806387,48.4933927],[37.3924248,48.4967827],[37.416742,48.4948994],[37.437079,48.4881286],[37.4461712,48.4906845],[37.4519195,48.4847651],[37.4660369,48.4792162],[37.4614422,48.4736672],[37.4740549,48.4590094],[37.49618390195237,48.45],[37.240236276408645,48.45],[37.2395648,48.4543476]]],[[[37.6075652,48.4579687],[37.6199406,48.4596229],[37.6283905,48.4654078],[37.622156,48.4856385],[37.6118098,48.4923675],[37.620349,48.4975604],[37.6239531,48.5255118],[37.6397744,48.5262641],[37.6494889,48.508159],[37.7161531,48.4844196],[37.728603,48.4952574],[37.740678,48.4954071],[37.7465416,48.4863836],[37.7619519,48.4831088],[37.7799668,48.4917466],[37.7686469,48.5001788],[37.7738057,48.5114247],[37.7689367,48.5183957],[37.7708795,48.5223588],[37.7568106,48.519319],[37.7451322,48.5236069],[37.7412742,48.5408882],[37.7968267,48.5491009],[37.7980996,48.556982],[37.7872896,48.5603536],[37.7919758,48.5639528],[37.8033654,48.5646357],[37.8033531,48.5722772],[37.8158294,48.575496],[37.819626,48.5824618],[37.8144112,48.58816],[37.817543,48.593017],[37.7844991,48.5890699],[37.7834333,48.5956317],[37.7868576,48.5973856],[37.761837,48.6024541],[37.7583948,48.6156084],[37.7631059,48.6192294],[37.7880016,48.623531],[37.7846667,48.633513],[37.7907092,48.6459671],[37.7844911,48.656656],[37.7818184,48.6733697],[37.7931667,48.6788366],[37.7865928,48.6907628],[37.8033456,48.6927169],[37.8086549,48.7104448],[37.8074665,48.7151677],[37.798461,48.7218894],[37.8158917,48.7219293],[37.8097489,48.7328603],[37.8171535,48.7370909],[37.8081413,48.7403174],[37.8109527,48.7437282],[37.8203288,48.7405471],[37.8270652,48.7468709],[37.8318114,48.7457201],[37.8383361,48.7576668],[37.8250056,48.7565451],[37.8185829,48.762317],[37.8420493,48.7835308],[37.8478847,48.7754503],[37.8705296,48.7756264],[37.8726938,48.7826475],[37.9004187,48.7740565],[37.9134506,48.7834323],[37.9226689,48.7852681],[37.9204119,48.7950764],[37.9404438,48.7984199],[37.9289129,48.8115355],[37.9178484,48.8100946],[37.9071624,48.8330371],[37.8562219,48.8197018],[37.8577853,48.8285177],[37.8674959,48.8277263],[37.8705493,48.8381221],[37.8797819,48.8390256],[37.8751016,48.8465428],[37.8925465,48.8517133],[37.888576,48.858569],[37.8920472,48.8648272],[37.9024089,48.865726],[37.9077942,48.8700678],[37.8987082,48.8753699],[37.9012092,48.8780189],[37.9163466,48.8796124],[37.9269365,48.8854383],[37.9315117,48.8909146],[37.9299934,48.9005092],[37.9370505,48.9087543],[37.9404422,48.9187692],[37.9661973,48.9378116],[37.9653286,48.9419142],[37.9537381,48.9459549],[37.9502394,48.9407359],[37.9357549,48.941323],[37.935628,48.9273212],[37.930705,48.9150088],[37.9192613,48.9123972],[37.8816009,48.9299537],[37.8789452,48.9514532],[37.8829035,48.9599471],[37.9669839,48.9697606],[37.96838,48.976538],[37.965441,48.98459],[37.98064,48.989903],[37.956422,49.009206],[37.945692,49.009082],[37.938389,49.019295],[37.94156,49.019807],[37.940268,49.023416],[37.951235,49.024341],[37.961283,49.033357],[37.95489,49.038881],[37.966102,49.048272],[37.968105,49.060994],[37.955772,49.067824],[37.917712,49.081798],[37.883844,49.077528],[37.869523,49.071161],[37.8608946,49.0814076],[37.8399829,49.0784861],[37.8203985,49.0698701],[37.783585,49.071062],[37.747419,49.0631634],[37.7220394,49.0648366],[37.7130459,49.0691004],[37.720738,49.082395],[37.72225,49.0933252],[37.714108,49.102253],[37.7128834,49.1128394],[37.7208624,49.1278788],[37.7472985,49.1297186],[37.7536,49.136166],[37.747495,49.137986],[37.745681,49.142893],[37.764481,49.163179],[37.7638464,49.1668115],[37.7500095,49.174491],[37.749046,49.178692],[37.759911,49.185634],[37.776544,49.182906],[37.783937,49.188134],[37.805966,49.180848],[37.814419,49.185799],[37.839223,49.186051],[37.842278,49.1906],[37.8839,49.192806],[37.892682,49.200398],[37.88074,49.208092],[37.884149,49.220472],[37.878299,49.221606],[37.876396,49.226102],[37.898306,49.224458],[37.91873,49.226813],[37.915586,49.242748],[37.919478,49.245847],[37.9510069,49.2363778],[37.9564918,49.2402874],[37.9491714,49.2417166],[37.953817,49.2454436],[37.9500259,49.2479101],[37.9670076,49.2438865],[37.997876,49.252128],[38.014016,49.268431],[38.006727,49.273896],[38.012922,49.285051],[38.002595,49.288282],[37.997847,49.283115],[37.983734,49.28089],[37.967716,49.286555],[37.962008,49.303265],[37.969614,49.303038],[37.969378,49.311145],[37.961584,49.311489],[37.961857,49.317318],[37.966392,49.322245],[37.964944,49.332475],[37.941789,49.338838],[37.941921,49.349687],[37.949573,49.353118],[37.954308,49.361588],[37.949072,49.362706],[37.938519,49.379198],[37.916074,49.378557],[37.916373,49.382798],[37.890612,49.382054],[37.875647,49.377602],[37.847139,49.381273],[37.846639,49.386656],[37.829959,49.401199],[37.815689,49.390963],[37.768932,49.405279],[37.7645106,49.3973763],[37.7115087,49.4170643],[37.684216,49.4121845],[37.6767368,49.4212577],[37.7084009,49.4307764],[37.7125011,49.4417663],[37.7432773,49.4599297],[37.7579254,49.4579104],[37.7717094,49.4682359],[37.7783498,49.4823508],[37.7435195,49.4910765],[37.728931,49.501997],[37.733753,49.510818],[37.723574,49.514624],[37.713266,49.513489],[37.695034,49.502686],[37.700764,49.514862],[37.696968,49.525332],[37.692828,49.526886],[37.701752,49.552933],[37.715368,49.556361],[37.759603,49.556177],[37.760668,49.559201],[37.753832,49.563496],[37.772164,49.574912],[37.79249,49.580292],[37.796328,49.590543],[37.790625,49.592201],[37.790894,49.594665],[37.804075,49.594326],[37.803024,49.603214],[37.789024,49.603152],[37.787941,49.607704],[37.808735,49.607885],[37.8166923,49.6149658],[37.810056,49.6241761],[37.7989986,49.6273681],[37.8012187,49.6408989],[37.7782176,49.6426777],[37.7784403,49.6513703],[37.7517409,49.654404],[37.7285764,49.6514436],[37.725057,49.6421537],[37.7083228,49.6420886],[37.7079824,49.6487386],[37.7172566,49.6563693],[37.7122966,49.6654426],[37.7398549,49.6683544],[37.7674143,49.6671528],[37.7778114,49.6731791],[37.7708693,49.6892205],[37.7756004,49.6953775],[37.7695729,49.7040325],[37.7768543,49.7327184],[37.7494416,49.7414791],[37.700727,49.7369691],[37.68159523590887,49.75],[39.2,49.75],[39.2,48.45],[37.60601645311895,48.45],[37.6075652,48.4579687]]]]}}]},"grey":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"category":"grey"},"geometry":{"type":"Polygon","coordinates":[[[37.4740549,48.4590094,0.0],[37.4614422,48.4736672,0.0],[37.4660369,48.4792162,0.0],[37.4519195,48.4847651,0.0],[37.4461712,48.4906845,0.0],[37.437079,48.4881286,0.0],[37.416742,48.4948994,0.0],[37.3924248,48.4967827,0.0],[37.3867892,48.4933742,0.0],[37.3806387,48.4933927,0.0],[37.3751165,48.4889811,0.0],[37.3755561,48.484284,0.0],[37.3674132,48.4824313,0.0],[37.3648609,48.4778166,0.0],[37.3393465,48.4737259,0.0],[37.3183827,48.4739269,0.0],[37.2988671,48.4760212,0.0],[37.2812055,48.4730304,0.0],[37.2744441,48.4683888,0.0],[37.2466742,48.4597869,0.0],[37.2496422,48.4557022,0.0],[37.2395648,48.4543476,0.0],[37.240236276408645,48.45,0.0],[37.195173617250376,48.45,0.0],[37.2053068,48.4668001,0.0],[37.2170399,48.4681267,0.0],[37.2171415,48.4721669,0.0],[37.232908,48.4737081,0.0],[37.2473007,48.4702397,0.0],[37.2633857,48.4763909,0.0],[37.3055233,48.487631,0.0],[37.3162906,48.4889549,0.0],[37.3169985,48.483451,0.0],[37.3327268,48.4787429,0.0],[37.3326835,48.4826397,0.0],[37.339164,48.489381,0.0],[37.337791,48.494956,0.0],[37.3449825,48.5171686,0.0],[37.3591915,48.5350223,0.0],[37.3823349,48.5390046,0.0],[37.3981425,48.530024,0.0],[37.3957507,48.5139947,0.0],[37.4163468,48.5072782,0.0],[37.4435462,48.495796,0.0],[37.4690325,48.4919878,0.0],[37.4813813,48.4706271,0.0],[37.5100541,48.4571884,0.0],[37.5464325,48.4583132,0.0],[37.5962163,48.4660713,0.0],[37.5925053,48.4801104,0.0],[37.5794754,48.4830219,0.0],[37.5829599,48.4964805,0.0],[37.5955187,48.5034351,0.0],[37.6078448,48.5050126,0.0],[37.6064465,48.5166295,0.0],[37.6183551,48.5390987,0.0],[37.6213755,48.5512011,0.0],[37.6256674,48.5573345,0.0],[37.6409368,48.5573557,0.0],[37.6404164,48.548105,0.0],[37.653112,48.5416949,0.0],[37.6681229,48.5380791,0.0],[37.6738619,48.5308251,0.0],[37.6797734,48.5311305,0.0],[37.6839311,48.5337555,0.0],[37.6904916,48.5272862,0.0],[37.7184947,48.5159425,0.0],[37.7036659,48.5228525,0.0],[37.7135148,48.5248958,0.0],[37.7298881,48.5190941,0.0],[37.7382378,48.5246542,0.0],[37.716373,48.5352161,0.0],[37.7063107,48.5308576,0.0],[37.6928149,48.5360463,0.0],[37.694662,48.5425594,0.0],[37.7099852,48.5481584,0.0],[37.70445,48.5526449,0.0],[37.689988,48.5559953,0.0],[37.6875011,48.5691419,0.0],[37.6996033,48.5793312,0.0],[37.7293909,48.5822683,0.0],[37.7699674,48.5626572,0.0],[37.77712,48.567063,0.0],[37.7878548,48.5669285,0.0],[37.7916929,48.5705355,0.0],[37.7929561,48.5756175,0.0],[37.8019234,48.5761706,0.0],[37.7992405,48.5790373,0.0],[37.7909142,48.5806986,0.0],[37.7777827,48.5802588,0.0],[37.7765813,48.5873279,0.0],[37.7787421,48.5939242,0.0],[37.7487315,48.5992637,0.0],[37.7454405,48.6080071,0.0],[37.7528914,48.6204931,0.0],[37.7785837,48.6235806,0.0],[37.7826119,48.6265549,0.0],[37.7741891,48.6332167,0.0],[37.7754651,48.6425449,0.0],[37.7570586,48.6537122,0.0],[37.7568182,48.6595438,0.0],[37.7649911,48.6692843,0.0],[37.7794489,48.6776304,0.0],[37.7806546,48.695819,0.0],[37.7991966,48.702877,0.0],[37.8018079,48.7129944,0.0],[37.7926337,48.7146037,0.0],[37.7753009,48.7149271,0.0],[37.7682968,48.7097208,0.0],[37.7564873,48.7087049,0.0],[37.7424503,48.7120061,0.0],[37.772771,48.7172401,0.0],[37.7719574,48.722158,0.0],[37.7893905,48.7238818,0.0],[37.7791687,48.7340205,0.0],[37.7622716,48.7344083,0.0],[37.7551589,48.7373426,0.0],[37.7412229,48.7375607,0.0],[37.7410188,48.7438917,0.0],[37.8035329,48.7419921,0.0],[37.8020836,48.7481907,0.0],[37.7915539,48.7530724,0.0],[37.8054002,48.7532005,0.0],[37.7936101,48.7612661,0.0],[37.7707401,48.7644025,0.0],[37.7706996,48.7694613,0.0],[37.7967983,48.7667374,0.0],[37.8034962,48.772277,0.0],[37.795844,48.7833448,0.0],[37.7874936,48.7858004,0.0],[37.7539139,48.7758147,0.0],[37.7469927,48.777459,0.0],[37.7840326,48.7889308,0.0],[37.7870229,48.7910049,0.0],[37.7903564,48.7878766,0.0],[37.7961377,48.7874643,0.0],[37.8012378,48.7824223,0.0],[37.8029414,48.7829418,0.0],[37.8099658,48.7756561,0.0],[37.8174659,48.7811277,0.0],[37.8189573,48.7790199,0.0],[37.8124932,48.7724229,0.0],[37.8146126,48.7680885,0.0],[37.8208456,48.7694583,0.0],[37.828109,48.7796969,0.0],[37.8424538,48.7863134,0.0],[37.8594053,48.7836604,0.0],[37.8710779,48.789325,0.0],[37.8738214,48.7927101,0.0],[37.8686683,48.798357,0.0],[37.8552238,48.7966274,0.0],[37.8362848,48.7989672,0.0],[37.8184048,48.8049982,0.0],[37.8324532,48.8166821,0.0],[37.8233214,48.8199979,0.0],[37.8120153,48.8275303,0.0],[37.7929302,48.829392,0.0],[37.7940998,48.8350951,0.0],[37.8144689,48.8356303,0.0],[37.8145816,48.8384252,0.0],[37.8244206,48.8394957,0.0],[37.8232522,48.849056,0.0],[37.8267174,48.8511043,0.0],[37.8354563,48.8492069,0.0],[37.8422205,48.8604679,0.0],[37.8338279,48.8649544,0.0],[37.8374397,48.8769482,0.0],[37.8328425,48.88531,0.0],[37.8467857,48.887068,0.0],[37.857465,48.885692,0.0],[37.861655,48.887077,0.0],[37.864824,48.884919,0.0],[37.861126,48.88152,0.0],[37.869655,48.878114,0.0],[37.8802,48.877317,0.0],[37.884206,48.879011,0.0],[37.884674,48.8811,0.0],[37.882761,48.882511,0.0],[37.882264,48.88515,0.0],[37.883162,48.885913,0.0],[37.894621,48.888816,0.0],[37.899683,48.887912,0.0],[37.903653,48.884807,0.0],[37.9120854,48.8878266,0.0],[37.9161388,48.8975402,0.0],[37.902432,48.8991602,0.0],[37.8442415,48.9115211,0.0],[37.8442347,48.92487,0.0],[37.861652,48.9408098,0.0],[37.8705467,48.9512797,0.0],[37.8604697,48.9557719,0.0],[37.8539832,48.9646572,0.0],[37.8488942,48.9683382,0.0],[37.8410988,48.9689486,0.0],[37.8368577,48.9711694,0.0],[37.8649036,48.9724882,0.0],[37.8791218,48.9748926,0.0],[37.8908546,48.9822552,0.0],[37.9199287,48.9830795,0.0],[37.9173282,49.0046278,0.0],[37.8537172,49.0059445,0.0],[37.837014,49.0194348,0.0],[37.8468586,49.0240407,0.0],[37.8597928,49.0182889,0.0],[37.918909,49.025077,0.0],[37.91526,49.035048,0.0],[37.919981,49.040808,0.0],[37.939205,49.049626,0.0],[37.936457,49.056052,0.0],[37.918429,49.071037,0.0],[37.913369,49.078324,0.0],[37.890314,49.075562,0.0],[37.8686,49.06818,0.0],[37.856155,49.074966,0.0],[37.8408763,49.0731336,0.0],[37.8210429,49.0659738,0.0],[37.781019,49.065942,0.0],[37.756338,49.060232,0.0],[37.7272603,49.0586718,0.0],[37.7315781,49.0520369,0.0],[37.7255964,49.0483269,0.0],[37.7053929,49.0593557,0.0],[37.7060963,49.0682547,0.0],[37.716627,49.0871531,0.0],[37.7107383,49.095332,0.0],[37.7069952,49.105982,0.0],[37.709634,49.1193,0.0],[37.7163289,49.1308804,0.0],[37.7226363,49.134989,0.0],[37.7410466,49.1321328,0.0],[37.745165,49.134192,0.0],[37.745097,49.137323,0.0],[37.74131,49.140806,0.0],[37.747388,49.147149,0.0],[37.750486,49.15421,0.0],[37.76123,49.162937,0.0],[37.7452961,49.1707599,0.0],[37.746763,49.178811,0.0],[37.759846,49.18666,0.0],[37.776945,49.183698,0.0],[37.783406,49.188819,0.0],[37.796255,49.186043,0.0],[37.795972,49.184165,0.0],[37.805704,49.181754,0.0],[37.812294,49.186468,0.0],[37.800585,49.194774,0.0],[37.771324,49.203977,0.0],[37.77901,49.210822,0.0],[37.806265,49.203982,0.0],[37.836973,49.20173,0.0],[37.851759,49.197487,0.0],[37.865991,49.198138,0.0],[37.883657,49.196095,0.0],[37.884114,49.201147,0.0],[37.874873,49.205245,0.0],[37.880908,49.21741,0.0],[37.87531,49.221353,0.0],[37.87403,49.227311,0.0],[37.88615,49.230819,0.0],[37.913841,49.228596,0.0],[37.911384,49.244321,0.0],[37.918025,49.248896,0.0],[37.934856,49.246172,0.0],[37.9435413,49.2505301,0.0],[37.9696888,49.2508738,0.0],[37.974464,49.256484,0.0],[37.9832,49.257987,0.0],[37.993996,49.256464,0.0],[38.006649,49.265902,0.0],[37.999282,49.269851,0.0],[38.008605,49.281031,0.0],[38.007708,49.283992,0.0],[38.00592,49.284274,0.0],[38.003059,49.282344,0.0],[38.00273,49.280419,0.0],[37.997265,49.281103,0.0],[37.993373,49.279225,0.0],[37.98164,49.279834,0.0],[37.972763,49.276573,0.0],[37.956642,49.286681,0.0],[37.949082,49.299019,0.0],[37.949093,49.302465,0.0],[37.955726,49.302584,0.0],[37.959013,49.311026,0.0],[37.957845,49.317449,0.0],[37.961914,49.322194,0.0],[37.961284,49.329427,0.0],[37.957687,49.332292,0.0],[37.941002,49.335679,0.0],[37.936248,49.344945,0.0],[37.936281,49.34811,0.0],[37.949033,49.357045,0.0],[37.949442,49.359486,0.0],[37.94581,49.361937,0.0],[37.935243,49.36184,0.0],[37.938992,49.369784,0.0],[37.935199,49.370826,0.0],[37.934023,49.374131,0.0],[37.929778,49.376402,0.0],[37.908238,49.371913,0.0],[37.902268,49.375326,0.0],[37.874924,49.372197,0.0],[37.862893,49.372979,0.0],[37.857654,49.370409,0.0],[37.853662,49.370241,0.0],[37.843661,49.372868,0.0],[37.84331,49.38449,0.0],[37.814782,49.384433,0.0],[37.7694306,49.4003537,0.0],[37.7655493,49.3953382,0.0],[37.7109544,49.4130493,0.0],[37.6779749,49.4080459,0.0],[37.666622,49.4191209,0.0],[37.6513219,49.4396275,0.0],[37.6614262,49.4465151,0.0],[37.6850251,49.4669086,0.0],[37.7366809,49.4636252,0.0],[37.751935,49.4713033,0.0],[37.7422374,49.4800924,0.0],[37.723474,49.492968,0.0],[37.71964,49.507401,0.0],[37.710562,49.506967,0.0],[37.696588,49.498335,0.0],[37.690427,49.501074,0.0],[37.693722,49.512905,0.0],[37.69053,49.526754,0.0],[37.692556,49.542023,0.0],[37.701465,49.559861,0.0],[37.723184,49.565966,0.0],[37.739396,49.572306,0.0],[37.760918,49.571969,0.0],[37.770143,49.573801,0.0],[37.78271,49.597044,0.0],[37.776128,49.605085,0.0],[37.791781,49.611058,0.0],[37.7860862,49.6198499,0.0],[37.7637225,49.6210296,0.0],[37.7545555,49.636212,0.0],[37.7248715,49.6398261,0.0],[37.7042874,49.6322504,0.0],[37.6986339,49.6315746,0.0],[37.6984734,49.6344566,0.0],[37.6889834,49.6494299,0.0],[37.6916641,49.6613325,0.0],[37.6642504,49.6575601,0.0],[37.6645325,49.6622853,0.0],[37.6773475,49.6702324,0.0],[37.6946207,49.6716898,0.0],[37.7026201,49.6785852,0.0],[37.702029,49.6877838,0.0],[37.7408699,49.6953195,0.0],[37.7580617,49.7209233,0.0],[37.7308234,49.7255058,0.0],[37.7223094,49.7195513,0.0],[37.7028104,49.7209199,0.0],[37.6871229,49.7317233,0.0],[37.6783521,49.7333321,0.0],[37.6736256,49.7383897,0.0],[37.6677489,49.7413335,0.0],[37.6550822,49.7435044,0.0],[37.6440378,49.7432932,0.0],[37.6341256,49.7382572,0.0],[37.623658,49.7208424,0.0],[37.6237334,49.714144,0.0],[37.6219251,49.708671,0.0],[37.6095143,49.7095109,0.0],[37.6096735,49.7125747,0.0],[37.5931655,49.7204694,0.0],[37.6023832,49.7254305,0.0],[37.6150203,49.7272898,0.0],[37.6165154,49.7257605,0.0],[37.6201562,49.7257847,0.0],[37.6240903,49.7282187,0.0],[37.619943,49.73697,0.0],[37.6268228,49.7417393,0.0],[37.6216966,49.7492823,0.0],[37.62235234477705,49.75,0.0],[37.65554550288184,49.75,0.0],[37.68190292372567,49.75,0.0],[37.700727,49.7369691,0.0],[37.7192914,49.7369807,0.0],[37.733444,49.740142,0.0],[37.7494416,49.7414791,0.0],[37.7768543,49.7327184,0.0],[37.7695729,49.7040325,0.0],[37.7756004,49.6953775,0.0],[37.7708693,49.6892205,0.0],[37.7778114,49.6731791,0.0],[37.7674143,49.6671528,0.0],[37.7398549,49.6683544,0.0],[37.7122966,49.6654426,0.0],[37.7137469,49.6586836,0.0],[37.7172566,49.6563693,0.0],[37.716739,49.6539988,0.0],[37.7079824,49.6487386,0.0],[37.7083228,49.6420886,0.0],[37.725057,49.6421537,0.0],[37.7285764,49.6514436,0.0],[37.7517409,49.654404,0.0],[37.7784403,49.6513703,0.0],[37.7782176,49.6426777,0.0],[37.8012187,49.6408989,0.0],[37.7989986,49.6273681,0.0],[37.810056,49.6241761,0.0],[37.8166923,49.6149658,0.0],[37.808735,49.607885,0.0],[37.787941,49.607704,0.0],[37.789024,49.603152,0.0],[37.803024,49.603214,0.0],[37.804075,49.594326,0.0],[37.790894,49.594665,0.0],[37.790625,49.592201,0.0],[37.796328,49.590543,0.0],[37.79249,49.580292,0.0],[37.772164,49.574912,0.0],[37.77057,49.572138,0.0],[37.761252,49.569586,0.0],[37.753832,49.563496,0.0],[37.753838,49.56178,0.0],[37.760668,49.559201,0.0],[37.759603,49.556177,0.0],[37.715368,49.556361,0.0],[37.701752,49.552933,0.0],[37.70085,49.544334,0.0],[37.696021,49.541136,0.0],[37.695323,49.530318,0.0],[37.692828,49.526886,0.0],[37.696968,49.525332,0.0],[37.700764,49.514862,0.0],[37.696716,49.508826,0.0],[37.695034,49.502686,0.0],[37.697626,49.502403,0.0],[37.706303,49.507389,0.0],[37.713266,49.513489,0.0],[37.723574,49.514624,0.0],[37.733753,49.510818,0.0],[37.728931,49.501997,0.0],[37.7435195,49.4910765,0.0],[37.7783498,49.4823508,0.0],[37.7717094,49.4682359,0.0],[37.7579254,49.4579104,0.0],[37.7432773,49.4599297,0.0],[37.7125011,49.4417663,0.0],[37.7084009,49.4307764,0.0],[37.6767368,49.4212577,0.0],[37.684216,49.4121845,0.0],[37.7115087,49.4170643,0.0],[37.7645106,49.3973763,0.0],[37.768932,49.405279,0.0],[37.815689,49.390963,0.0],[37.82396,49.394644,0.0],[37.829959,49.401199,0.0],[37.846639,49.386656,0.0],[37.847139,49.381273,0.0],[37.86223,49.380416,0.0],[37.875647,49.377602,0.0],[37.890612,49.382054,0.0],[37.916373,49.382798,0.0],[37.916074,49.378557,0.0],[37.93251,49.38069,0.0],[37.938519,49.379198,0.0],[37.949072,49.362706,0.0],[37.954308,49.361588,0.0],[37.949573,49.353118,0.0],[37.941921,49.349687,0.0],[37.943867,49.346904,0.0],[37.941177,49.344568,0.0],[37.941789,49.338838,0.0],[37.950047,49.337701,0.0],[37.964944,49.332475,0.0],[37.966392,49.322245,0.0],[37.961857,49.317318,0.0],[37.961584,49.311489,0.0],[37.969378,49.311145,0.0],[37.969614,49.303038,0.0],[37.962008,49.303265,0.0],[37.967716,49.286555,0.0],[37.983734,49.28089,0.0],[37.98938,49.283586,0.0],[37.997847,49.283115,0.0],[38.002595,49.288282,0.0],[38.008788,49.28801,0.0],[38.012922,49.285051,0.0],[38.006727,49.273896,0.0],[38.014016,49.268431,0.0],[38.009803,49.261509,0.0],[37.997876,49.252128,0.0],[37.9670076,49.2438865,0.0],[37.9559195,49.2482486,0.0],[37.9500259,49.2479101,0.0],[37.9500332,49.2466768,0.0],[37.953817,49.2454436,0.0],[37.9502621,49.2441543,0.0],[37.9491714,49.2417166,0.0],[37.9564918,49.2402874,0.0],[37.9510069,49.2363778,0.0],[37.935564,49.239305,0.0],[37.919478,49.245847,0.0],[37.915586,49.242748,0.0],[37.91873,49.226813,0.0],[37.898306,49.224458,0.0],[37.895111,49.226009,0.0],[37.876396,49.226102,0.0],[37.878299,49.221606,0.0],[37.884149,49.220472,0.0],[37.883474,49.213581,0.0],[37.88074,49.208092,0.0],[37.892682,49.200398,0.0],[37.8839,49.192806,0.0],[37.842278,49.1906,0.0],[37.839223,49.186051,0.0],[37.814419,49.185799,0.0],[37.805966,49.180848,0.0],[37.794786,49.183885,0.0],[37.79455,49.185673,0.0],[37.783937,49.188134,0.0],[37.776544,49.182906,0.0],[37.759911,49.185634,0.0],[37.755336,49.181574,0.0],[37.749046,49.178692,0.0],[37.7500095,49.174491,0.0],[37.7638464,49.1668115,0.0],[37.764481,49.163179,0.0],[37.745681,49.142893,0.0],[37.747495,49.137986,0.0],[37.7536,49.136166,0.0],[37.7472985,49.1297186,0.0],[37.7208624,49.1278788,0.0],[37.7128834,49.1128394,0.0],[37.714108,49.102253,0.0],[37.72225,49.0933252,0.0],[37.720738,49.0823946,0.0],[37.7130459,49.0691004,0.0],[37.7220394,49.0648366,0.0],[37.747419,49.0631634,0.0],[37.783585,49.071062,0.0],[37.8203985,49.0698701,0.0],[37.8399829,49.0784861,0.0],[37.8608946,49.0814076,0.0],[37.866655,49.072194,0.0],[37.869523,49.071161,0.0],[37.883844,49.077528,0.0],[37.900901,49.081013,0.0],[37.917712,49.081798,0.0],[37.935568,49.073383,0.0],[37.955772,49.067824,0.0],[37.968105,49.060994,0.0],[37.966102,49.048272,0.0],[37.95489,49.038881,0.0],[37.961283,49.033357,0.0],[37.951235,49.024341,0.0],[37.940268,49.023416,0.0],[37.94156,49.019807,0.0],[37.938389,49.019295,0.0],[37.940453,49.013688,0.0],[37.945692,49.009082,0.0],[37.956422,49.009206,0.0],[37.967442,49.002176,0.0],[37.9806398,48.9899033,0.0],[37.9758289,48.986475,0.0],[37.9654414,48.9845902,0.0],[37.9683802,48.9765379,0.0],[37.9669839,48.9697606,0.0],[37.9247142,48.9659619,0.0],[37.8829035,48.9599471,0.0],[37.8789452,48.9514532,0.0],[37.8816009,48.9299537,0.0],[37.9192613,48.9123972,0.0],[37.930705,48.9150088,0.0],[37.935628,48.9273212,0.0],[37.933803,48.9368311,0.0],[37.9357549,48.941323,0.0],[37.9502394,48.9407359,0.0],[37.9537381,48.9459549,0.0],[37.9653286,48.9419142,0.0],[37.9661973,48.9378116,0.0],[37.9404422,48.9187692,0.0],[37.9370505,48.9087543,0.0],[37.9299934,48.9005092,0.0],[37.9322546,48.898336,0.0],[37.9315117,48.8909146,0.0],[37.9269365,48.8854383,0.0],[37.9163466,48.8796124,0.0],[37.9012092,48.8780189,0.0],[37.8987082,48.8753699,0.0],[37.9077942,48.8700678,0.0],[37.9024089,48.865726,0.0],[37.8920472,48.8648272,0.0],[37.888576,48.858569,0.0],[37.8925465,48.8517133,0.0],[37.8751016,48.8465428,0.0],[37.8797819,48.8390256,0.0],[37.8705493,48.8381221,0.0],[37.8674959,48.8277263,0.0],[37.8577853,48.8285177,0.0],[37.8562219,48.8197018,0.0],[37.8903458,48.8267685,0.0],[37.9071624,48.8330371,0.0],[37.9178484,48.8100946,0.0],[37.9289129,48.8115355,0.0],[37.9356132,48.8018499,0.0],[37.9404438,48.7984199,0.0],[37.9373779,48.7960075,0.0],[37.9294098,48.7979169,0.0],[37.92051725765299,48.794618544675295,0.0],[37.9226689,48.7852681,0.0],[37.9134506,48.7834323,0.0],[37.9004187,48.7740565,0.0],[37.8910919,48.7782862,0.0],[37.8726938,48.7826475,0.0],[37.8706277,48.7820605,0.0],[37.8705296,48.7756264,0.0],[37.8478847,48.7754503,0.0],[37.8420493,48.7835308,0.0],[37.835017,48.7794625,0.0],[37.8185829,48.762317,0.0],[37.8250056,48.7565451,0.0],[37.8383361,48.7576668,0.0],[37.8318114,48.7457201,0.0],[37.8270652,48.7468709,0.0],[37.8203288,48.7405471,0.0],[37.8109527,48.7437282,0.0],[37.8081413,48.7403174,0.0],[37.8171535,48.7370909,0.0],[37.8097489,48.7328603,0.0],[37.8158917,48.7219293,0.0],[37.798461,48.7218894,0.0],[37.7986725,48.7198877,0.0],[37.8074665,48.7151677,0.0],[37.8086549,48.7104448,0.0],[37.8046691,48.7010383,0.0],[37.8033456,48.6927169,0.0],[37.7865928,48.6907628,0.0],[37.7931667,48.6788366,0.0],[37.7818184,48.6733697,0.0],[37.7844911,48.656656,0.0],[37.7907092,48.6459671,0.0],[37.7846667,48.633513,0.0],[37.7880016,48.623531,0.0],[37.7764591,48.619809,0.0],[37.7631059,48.6192294,0.0],[37.7583948,48.6156084,0.0],[37.761837,48.6024541,0.0],[37.7868576,48.5973856,0.0],[37.7834333,48.5956317,0.0],[37.7844991,48.5890699,0.0],[37.817543,48.593017,0.0],[37.818144,48.590592,0.0],[37.8144112,48.58816,0.0],[37.819626,48.5824618,0.0],[37.8158294,48.575496,0.0],[37.8033531,48.5722772,0.0],[37.8033654,48.5646357,0.0],[37.7919758,48.5639528,0.0],[37.7904849,48.5606162,0.0],[37.7872896,48.5603536,0.0],[37.7879235,48.5586318,0.0],[37.7937931,48.5594093,0.0],[37.7980996,48.556982,0.0],[37.7968267,48.5491009,0.0],[37.7702587,48.543597,0.0],[37.7412742,48.5408882,0.0],[37.7446283,48.5319419,0.0],[37.7423786,48.5299407,0.0],[37.7451322,48.5236069,0.0],[37.7568106,48.519319,0.0],[37.7708795,48.5223588,0.0],[37.7689367,48.5183957,0.0],[37.7738057,48.5114247,0.0],[37.7686224,48.5001496,0.0],[37.7799668,48.4917466,0.0],[37.7619519,48.4831088,0.0],[37.7465416,48.4863836,0.0],[37.740678,48.4954071,0.0],[37.728603,48.4952574,0.0],[37.7161531,48.4844196,0.0],[37.7002034,48.4915001,0.0],[37.6894875,48.4919232,0.0],[37.6863436,48.4964505,0.0],[37.6798524,48.4956879,0.0],[37.6646924,48.5036842,0.0],[37.6494889,48.508159,0.0],[37.6397744,48.5262641,0.0],[37.6239531,48.5255118,0.0],[37.620349,48.4975604,0.0],[37.6118098,48.4923675,0.0],[37.6153731,48.4882284,0.0],[37.622156,48.4856385,0.0],[37.6283905,48.4654078,0.0],[37.6199406,48.4596229,0.0],[37.6075652,48.4579687,0.0],[37.60601645311895,48.45,0.0],[37.49445460390089,48.45,0.0],[37.4813328,48.4567067,0.0],[37.4740549,48.4590094,0.0]]]}}]},"front":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"category":"front"},"geometry":{"type":"MultiLineString","coordinates":[[[37.240236276408645,48.45],[37.2395648,48.4543476],[37.2496422,48.4557022],[37.2466742,48.4597869],[37.2812055,48.4730304],[37.2988671,48.4760212],[37.3393465,48.4737259],[37.3648609,48.4778166],[37.3674132,48.4824313],[37.3755561,48.484284],[37.3751165,48.4889811],[37.3806387,48.4933927],[37.3924248,48.4967827],[37.416742,48.4948994],[37.437079,48.4881286],[37.4461712,48.4906845],[37.4519195,48.4847651],[37.4660369,48.4792162],[37.4614422,48.4736672],[37.4740549,48.4590094],[37.49618390195237,48.45]],[[37.60601645311895,48.45],[37.6075652,48.4579687],[37.6199406,48.4596229],[37.6283905,48.4654078],[37.622156,48.4856385],[37.6118098,48.4923675],[37.620349,48.4975604],[37.6239531,48.5255118],[37.6397744,48.5262641],[37.6494889,48.508159],[37.7161531,48.4844196],[37.728603,48.4952574],[37.740678,48.4954071],[37.7465416,48.4863836],[37.7619519,48.4831088],[37.7799668,48.4917466],[37.7686469,48.5001788],[37.7738057,48.5114247],[37.7689367,48.5183957],[37.7708795,48.5223588],[37.7568106,48.519319],[37.7451322,48.5236069],[37.7412742,48.5408882],[37.7968267,48.5491009],[37.7980996,48.556982],[37.7872896,48.5603536],[37.7919758,48.5639528],[37.8033654,48.5646357],[37.8033531,48.5722772],[37.8158294,48.575496],[37.819626,48.5824618],[37.8144112,48.58816],[37.817543,48.593017],[37.7844991,48.5890699],[37.7834333,48.5956317],[37.7868576,48.5973856],[37.761837,48.6024541],[37.7583948,48.6156084],[37.7631059,48.6192294],[37.7880016,48.623531],[37.7846667,48.633513],[37.7907092,48.6459671],[37.7844911,48.656656],[37.7818184,48.6733697],[37.7931667,48.6788366],[37.7865928,48.6907628],[37.8033456,48.6927169],[37.8086549,48.7104448],[37.8074665,48.7151677],[37.798461,48.7218894],[37.8158917,48.7219293],[37.8097489,48.7328603],[37.8171535,48.7370909],[37.8081413,48.7403174],[37.8109527,48.7437282],[37.8203288,48.7405471],[37.8270652,48.7468709],[37.8318114,48.7457201],[37.8383361,48.7576668],[37.8250056,48.7565451],[37.8185829,48.762317],[37.8420493,48.7835308],[37.8478847,48.7754503],[37.8705296,48.7756264],[37.8726938,48.7826475],[37.9004187,48.7740565],[37.9134506,48.7834323],[37.9226689,48.7852681],[37.9204119,48.7950764],[37.9404438,48.7984199],[37.9289129,48.8115355],[37.9178484,48.8100946],[37.9071624,48.8330371],[37.8562219,48.8197018],[37.8577853,48.8285177],[37.8674959,48.8277263],[37.8705493,48.8381221],[37.8797819,48.8390256],[37.8751016,48.8465428],[37.8925465,48.8517133],[37.888576,48.858569],[37.8920472,48.8648272],[37.9024089,48.865726],[37.9077942,48.8700678],[37.8987082,48.8753699],[37.9012092,48.8780189],[37.9163466,48.8796124],[37.9269365,48.8854383],[37.9315117,48.8909146],[37.9299934,48.9005092],[37.9370505,48.9087543],[37.9404422,48.9187692],[37.9661973,48.9378116],[37.9653286,48.9419142],[37.9537381,48.9459549],[37.9502394,48.9407359],[37.9357549,48.941323],[37.935628,48.9273212],[37.930705,48.9150088],[37.9192613,48.9123972],[37.8816009,48.9299537],[37.8789452,48.9514532],[37.8829035,48.9599471],[37.9669839,48.9697606],[37.96838,48.976538],[37.965441,48.98459],[37.98064,48.989903],[37.956422,49.009206],[37.945692,49.009082],[37.938389,49.019295],[37.94156,49.019807],[37.940268,49.023416],[37.951235,49.024341],[37.961283,49.033357],[37.95489,49.038881],[37.966102,49.048272],[37.968105,49.060994],[37.955772,49.067824],[37.917712,49.081798],[37.883844,49.077528],[37.869523,49.071161],[37.8608946,49.0814076],[37.8399829,49.0784861],[37.8203985,49.0698701],[37.783585,49.071062],[37.747419,49.0631634],[37.7220394,49.0648366],[37.7130459,49.0691004],[37.720738,49.082395],[37.72225,49.0933252],[37.714108,49.102253],[37.7128834,49.1128394],[37.7208624,49.1278788],[37.7472985,49.1297186],[37.7536,49.136166],[37.747495,49.137986],[37.745681,49.142893],[37.764481,49.163179],[37.7638464,49.1668115],[37.7500095,49.174491],[37.749046,49.178692],[37.759911,49.185634],[37.776544,49.182906],[37.783937,49.188134],[37.805966,49.180848],[37.814419,49.185799],[37.839223,49.186051],[37.842278,49.1906],[37.8839,49.192806],[37.892682,49.200398],[37.88074,49.208092],[37.884149,49.220472],[37.878299,49.221606],[37.876396,49.226102],[37.898306,49.224458],[37.91873,49.226813],[37.915586,49.242748],[37.919478,49.245847],[37.9510069,49.2363778],[37.9564918,49.2402874],[37.9491714,49.2417166],[37.953817,49.2454436],[37.9500259,49.2479101],[37.9670076,49.2438865],[37.997876,49.252128],[38.014016,49.268431],[38.006727,49.273896],[38.012922,49.285051],[38.008788,49.28801],[37.983734,49.28089],[37.967716,49.286555],[37.962008,49.303265],[37.969614,49.303038],[37.969378,49.311145],[37.961584,49.311489],[37.961857,49.317318],[37.966392,49.322245],[37.964944,49.332475],[37.941789,49.338838],[37.941921,49.349687],[37.949573,49.353118],[37.954308,49.361588],[37.949072,49.362706],[37.938519,49.379198],[37.916074,49.378557],[37.916373,49.382798],[37.890612,49.382054],[37.875647,49.377602],[37.847139,49.381273],[37.846639,49.386656],[37.829959,49.401199],[37.815689,49.390963],[37.768932,49.405279],[37.7645106,49.3973763],[37.7115087,49.4170643],[37.684216,49.4121845],[37.6767368,49.4212577],[37.7084009,49.4307764],[37.7125011,49.4417663],[37.7432773,49.4599297],[37.7579254,49.4579104],[37.7717094,49.4682359],[37.7783498,49.4823508],[37.7435195,49.4910765],[37.728931,49.501997],[37.733753,49.510818],[37.723574,49.514624],[37.713266,49.513489],[37.695034,49.502686],[37.700764,49.514862],[37.696968,49.525332],[37.692828,49.526886],[37.701752,49.552933],[37.715368,49.556361],[37.759603,49.556177],[37.760668,49.559201],[37.753832,49.563496],[37.772164,49.574912],[37.79249,49.580292],[37.796328,49.590543],[37.790625,49.592201],[37.790894,49.594665],[37.804075,49.594326],[37.803024,49.603214],[37.789024,49.603152],[37.787941,49.607704],[37.808735,49.607885],[37.8166923,49.6149658],[37.810056,49.6241761],[37.7989986,49.6273681],[37.8012187,49.6408989],[37.7782176,49.6426777],[37.7784403,49.6513703],[37.7517409,49.654404],[37.7285764,49.6514436],[37.725057,49.6421537],[37.7083228,49.6420886],[37.7079824,49.6487386],[37.7172566,49.6563693],[37.7122966,49.6654426],[37.7398549,49.6683544],[37.7674143,49.6671528],[37.7778114,49.6731791],[37.7708693,49.6892205],[37.7756004,49.6953775],[37.7695729,49.7040325],[37.7768543,49.7327184],[37.7494416,49.7414791],[37.700727,49.7369691],[37.68159523590887,49.75]]]}}]}};
+
+/* ------------------------------------------------------------------ *
+ *  BOOT
+ * ------------------------------------------------------------------ */
+
+
+/* Tighter padding on narrow/short containers so the map fills the
+   frame instead of floating in a sea of margin — the fixed 40px
+   padding tuned for desktop leaves a poor, half-empty preview on
+   phones. */
+function paddingFor(w,h){
+  if (w < 480 || h < 420) return {top:20,right:14,bottom:20,left:44};
+  if (w < 760)            return {top:28,right:20,bottom:28,left:56};
+  return VIEW.padding;
+}
+
+function start(tok){
+if (window.__kiStarting) return;
+window.__kiStarting = true;
+mapboxgl.accessToken = tok;
+const stageEl = kiEl("stage");
+
+const map = new mapboxgl.Map({
+  container: (kiEl("map") || document.getElementById("map")),
+  style:STYLE_URL,
+  bounds:kiBounds(),
+  fitBoundsOptions:{padding:paddingFor(stageEl.clientWidth,stageEl.clientHeight)},
+  minZoom:6.4, maxZoom:13,
+  maxBounds:MAX_BOUNDS,
+  dragRotate:false, pitchWithRotate:false, touchPitch:false,
+  attributionControl:true
+});
+map.touchZoomRotate.disableRotation();
+window.__kiMap = map;
+window.__kiStarting = false;
+map.on("error", function(e){
+  var st = (e && e.error && e.error.status) ? " [HTTP " + e.error.status + "]" : "";
+  var m = ((e && e.error && e.error.message) || "unknown map error") + st;
+  if (/WebGL|context/i.test(m)) m = "WebGL is unavailable in this browser. " + m;
+  kiMsg(m);
+});
+map.addControl(new mapboxgl.NavigationControl({showCompass:false}), "top-left");
+
+/* Mobile browsers frequently report the wrong container size at the
+   moment Mapbox initializes (address bar collapsing, layout not yet
+   settled), which leaves the canvas cropped or blank until something
+   nudges it. Re-measure and re-fit whenever the container's real size
+   changes, but only until the user actually starts interacting with
+   the map — after that, respect their pan/zoom instead of resetting it. */
+map._userMoved = false;
+map.on("dragstart",()=>map._userMoved=true);
+map.on("zoomstart",e=>{ if(e.originalEvent) map._userMoved=true; });
+
+let resizeTimer=null;
+const refit = () => {
+  map.resize();
+  if (!map._userMoved){
+    map.fitBounds(kiBounds(),{padding:paddingFor(stageEl.clientWidth,stageEl.clientHeight),duration:0});
+  }
+};
+if (typeof ResizeObserver !== "undefined"){
+  new ResizeObserver(()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(refit,120);
+  }).observe(stageEl);
+}
+window.addEventListener("orientationchange",()=>setTimeout(refit,250));
+
+/* Phones are the common case for a map that initialises while its
+   container is still zero-sized or off-screen: the canvas comes out
+   0x0 and stays a white rectangle until something resizes it.
+   Resize the moment it actually becomes visible, and once more right
+   after the style finishes loading. */
+if (typeof IntersectionObserver !== "undefined"){
+  var kiIO = new IntersectionObserver(function(entries){
+    for (var i=0;i<entries.length;i++){
+      if (!entries[i].isIntersecting) continue;
+      map.resize();
+      if (!map._userMoved){
+        map.fitBounds(kiBounds(),{padding:paddingFor(stageEl.clientWidth,stageEl.clientHeight),duration:0});
+      }
+    }
+  }, {threshold:0.01});
+  kiIO.observe(stageEl);
+}
+map.on("style.load", function(){ window.__kiStyleLoaded = true; });
+map.on("load", function(){
+  window.__kiLoaded = true;
+  setTimeout(function(){ map.resize(); }, 60);
+  setTimeout(function(){ map.resize(); }, 800);
+});
+
+map.on("load", () => {
+  const BEFORE = map.getLayer("water-label") ? "water-label" : undefined;
+
+  /* --- quieten the basemap: our own labels take over ---------------- */
+  ["place-settlement-label","place-state-label","place-country-label"].forEach(id=>{
+    if (map.getLayer(id)) map.setLayoutProperty(id,"visibility","none");
+  });
+  /* soften basemap roads so the yellow highways read clearly */
+  [["road-street","#FFFFFF"],["road-secondary","#FFFFFF"]].forEach(([id])=>{
+    if (map.getLayer(id)) map.setPaintProperty(id,"line-opacity",
+      ["interpolate",["linear"],["zoom"],9,0,11,.9]);
+  });
+
+  /* --- urban footprints -------------------------------------------- */
+  map.addLayer({
+    id:"ki-urban", type:"fill", source:"composite", "source-layer":"landuse",
+    filter:["match",["get","class"],["residential"],true,false],
+    paint:{"fill-color":COLORS.urban,"fill-opacity":.6}
+  }, BEFORE);
+
+  /* --- rivers ------------------------------------------------------- */
+  map.addLayer({
+    id:"ki-rivers", type:"line", source:"composite", "source-layer":"waterway",
+    filter:["match",["get","class"],["river","canal"],true,false],
+    layout:{"line-cap":"round","line-join":"round"},
+    paint:{
+      "line-color":COLORS.river,
+      "line-width":["interpolate",["exponential",1.4],["zoom"],7,.9,12,4.5]
+    }
+  }, BEFORE);
+
+  /* --- highways ----------------------------------------------------- */
+  const hwFilter = ["match",["get","class"],["motorway","trunk","primary"],true,false];
+  map.addLayer({
+    id:"ki-hw-case", type:"line", source:"composite", "source-layer":"road",
+    filter:hwFilter, layout:{"line-cap":"round","line-join":"round"},
+    paint:{"line-color":COLORS.highwayCase,
+      "line-width":["interpolate",["exponential",1.4],["zoom"],7,2.6,13,10]}
+  }, BEFORE);
+  map.addLayer({
+    id:"ki-hw", type:"line", source:"composite", "source-layer":"road",
+    filter:hwFilter, layout:{"line-cap":"round","line-join":"round"},
+    paint:{"line-color":COLORS.highway,
+      "line-width":["interpolate",["exponential",1.4],["zoom"],7,1.5,13,7]}
+  }, BEFORE);
+
+  /* --- oblast borders ----------------------------------------------- */
+  map.addLayer({
+    id:"ki-oblast", type:"line", source:"composite", "source-layer":"admin",
+    filter:["all",["==",["get","admin_level"],1],["==",["get","maritime"],"false"]],
+    layout:{"line-join":"round"},
+    paint:{"line-color":COLORS.oblast,"line-width":1.5,"line-dasharray":[5,3],"line-opacity":.85}
+  }, BEFORE);
+
+  /* --- DeepState: grey zone, then occupied -------------------------- */
+  map.addSource("grey",{type:"geojson",data:DEEPSTATE.grey});
+  map.addLayer({ id:"ki-grey", type:"fill", source:"grey",
+    paint:{"fill-color":COLORS.grey,"fill-opacity":.52} }, BEFORE);
+
+  map.addSource("occ",{type:"geojson",data:DEEPSTATE.occupied});
+  map.addLayer({ id:"ki-occ", type:"fill", source:"occ",
+    paint:{"fill-color":COLORS.occupied,"fill-opacity":.45} }, BEFORE);
+  map.addLayer({ id:"ki-occ-line", type:"line", source:"occ",
+    paint:{"line-color":COLORS.occupiedLine,"line-width":1.1,"line-opacity":.75} }, BEFORE);
+
+  /* --- river labels -------------------------------------------------- */
+  map.addLayer({
+    id:"ki-river-label", type:"symbol", source:"composite", "source-layer":"waterway",
+    filter:["match",["coalesce",["get","name_en"],["get","name"],""],RIVER_NAMES,true,false],
+    layout:{
+      "symbol-placement":"line",
+      "text-field":["coalesce",["get","name_en"],["get","name"]],
+      "text-font":["Lato Italic","Open Sans Italic","DIN Pro Italic","Arial Unicode MS Regular"],
+      "text-size":["interpolate",["linear"],["zoom"],7,11,11,14],
+      "text-letter-spacing":.06,
+      "symbol-spacing":420
+    },
+    paint:{"text-color":"#4E7FA6","text-halo-color":"#F5F5F2","text-halo-width":1.4}
+  });
+
+  /* --- oblast labels -------------------------------------------------- */
+  map.addSource("oblast-pts",{type:"geojson",data:{
+    type:"FeatureCollection",
+    features:OBLASTS.map(o=>({type:"Feature",properties:{n:o.n},geometry:{type:"Point",coordinates:o.c}}))
+  }});
+  map.addLayer({
+    id:"ki-oblast-label", type:"symbol", source:"oblast-pts",
+    layout:{
+      "text-field":["get","n"],
+      "text-font":["Lato Bold","DIN Pro Medium","Arial Unicode MS Regular"],
+      "text-size":11.5,"text-letter-spacing":.14,"text-max-width":9
+    },
+    paint:{"text-color":"#6E6E66","text-halo-color":"#F5F5F2","text-halo-width":1.6}
+  });
+
+  /* --- settlements ---------------------------------------------------- */
+  const feats = PLACES.map(p=>({
+    type:"Feature",
+    properties:{n:p.n, kind:p.kind,
+      status: p.kind==="cleared" ? "Reported cleared by 3rd Army Corps"
+            : p.kind==="city"    ? "Town / city" : "Settlement"},
+    geometry:{type:"Point",coordinates:p.c}
+  }));
+  map.addSource("places",{type:"geojson",data:{type:"FeatureCollection",features:feats}});
+
+  map.addLayer({
+    id:"ki-dots", type:"circle", source:"places",
+    paint:{
+      "circle-radius":["match",["get","kind"],"city",5.2,"cleared",4.6,3.1],
+      "circle-color":["match",["get","kind"],"cleared",COLORS.blue,"city","#FFFFFF",COLORS.dot],
+      "circle-stroke-width":["match",["get","kind"],"city",2,"cleared",1.6,0],
+      "circle-stroke-color":["match",["get","kind"],"city","#2B2B28","#FFFFFF"]
+    }
+  });
+
+  map.addLayer({
+    id:"ki-labels", type:"symbol", source:"places",
+    layout:{
+      "text-field":["get","n"],
+      "text-font":["match",["get","kind"],"city",
+        ["literal",["Lato Black","DIN Pro Bold","Arial Unicode MS Regular"]],
+        ["literal",["Lato Bold","DIN Pro Medium","Arial Unicode MS Regular"]]],
+      "text-size":["match",["get","kind"],"city",14,"cleared",12,11],
+      "text-offset":[0,-1.05],
+      "text-anchor":"bottom",
+      "text-allow-overlap":false,
+      "text-padding":3
+    },
+    paint:{
+      "text-color":["match",["get","kind"],"cleared",COLORS.blue,"#1A1A18"],
+      "text-halo-color":"#FFFFFF","text-halo-width":1.7,"text-halo-blur":.3
+    }
+  });
+
+  /* tooltip */
+  const tip=kiEl("tip");
+  map.on("mousemove","ki-dots",e=>{
+    map.getCanvas().style.cursor="pointer";
+    const f=e.features[0];
+    tip.style.display="block";
+    tip.style.left=e.point.x+"px"; tip.style.top=e.point.y+"px";
+    tip.innerHTML="<b>"+f.properties.n+"</b> — "+f.properties.status;
+  });
+  map.on("mouseleave","ki-dots",()=>{ map.getCanvas().style.cursor=""; tip.style.display="none"; });
+
+  /* Place names, oblast names and dots keep desktop sizes on a phone,
+     which is what makes the small map unreadable. Scale them once the
+     frame width is known, and again if it changes. */
+  function kiScaleType(){
+    var st = kiEl("stage");
+    var w = st ? st.getBoundingClientRect().width : 760;
+    var k = Math.max(0.72, Math.min(1, w / 760));
+    if (map.getLayer("ki-labels")) {
+      map.setLayoutProperty("ki-labels","text-size",
+        ["match",["get","kind"],"city",14*k,"cleared",12*k,11*k]);
+      map.setLayoutProperty("ki-labels","text-offset",[0,-1.05*k]);
+    }
+    if (map.getLayer("ki-dots")) {
+      map.setPaintProperty("ki-dots","circle-radius",
+        ["match",["get","kind"],"city",5.2*k,"cleared",4.6*k,3.1*k]);
+    }
+    if (map.getLayer("ki-oblast-label")) map.setLayoutProperty("ki-oblast-label","text-size",11.5*k);
+    if (map.getLayer("ki-river-label"))
+      map.setLayoutProperty("ki-river-label","text-size",
+        ["interpolate",["linear"],["zoom"],7,11*k,11,14*k]);
+  }
+  try { kiScaleType(); } catch(e){ console.error("KI map: type scaling —", e); }
+  window.addEventListener("resize", function(){
+    setTimeout(function(){ try { kiScaleType(); } catch(e){} }, 150);
+  });
+
+  try { buildAnnotations(map); }
+  catch(e){ console.error("KI map: annotations —", e); kiMsg("notes failed: " + (e && e.message ? e.message : e)); }
+});
+
+/* ------------------------------------------------------------------ *
+ *  ANNOTATION OVERLAY (arrows, cluster halo, callouts)
+ * ------------------------------------------------------------------ */
+function buildAnnotations(map){
+  const svg = kiEl("svg");
+  const overlay = kiEl("overlay");
+  const NS="http://www.w3.org/2000/svg";
+
+  /* Wipe anything a previous run left behind — otherwise a second
+     init stacks a duplicate set of notes on top of the first. */
+  /* Notes live in their own layer above the legend; the svg overlay
+     with the arrows sits below it. Clear both so a re-init cannot
+     stack a second set. */
+  var stageEl2 = kiEl("stage");
+  var notesLayer = kiEl("ki-notes-layer");
+  if (!notesLayer && stageEl2) {
+    notesLayer = document.createElement("div");
+    notesLayer.id = "ki-notes-layer";
+    stageEl2.appendChild(notesLayer);
+  }
+  Array.prototype.slice.call(overlay.querySelectorAll(".callout")).forEach(function(e){ e.remove(); });
+  if (notesLayer) notesLayer.innerHTML = "";
+
+  /* Arrows, halo and heads are sized in pixels, so they look twice as
+     heavy on a 396px phone as on a 760px column. Scale them with the
+     frame. */
+  function kiScale(){
+    var st = kiEl("stage");
+    var w = st ? st.getBoundingClientRect().width : 760;
+    return Math.max(0.55, Math.min(1, w / 760));
+  }
+  let visible = true;
+
+  // callout DOM
+  const boxes = NOTES.map(n=>{
+    const d=document.createElement("div");
+    d.className="callout"; d.innerHTML=n.html;
+    (notesLayer || overlay).appendChild(d);
+    return {cfg:n, el:d};
+  });
+
+
+  const clearedPts = PLACES.filter(p=>p.kind==="cleared").map(p=>p.c);
+
+  function bez(t,p0,p1,p2,p3){
+    const u=1-t, a=u*u*u, b=3*u*u*t, c=3*u*t*t, d=t*t*t;
+    return [a*p0[0]+b*p1[0]+c*p2[0]+d*p3[0], a*p0[1]+b*p1[1]+c*p2[1]+d*p3[1]];
+  }
+
+  /* tapered arrow: sample the curve, offset perpendicular, close the shape */
+  function arrowPath(a){
+    const N=48, pts=[];
+    for(let i=0;i<=N;i++){
+      const t=i/N;
+      const g=bez(t,a.from,a.c1,a.c2,a.to);
+      const p=map.project(g); pts.push([p.x,p.y]);
+    }
+    const KS=kiScale();
+    const headLen=17*KS, headHalf=9.5*KS;
+    // trim the shaft so the head sits at the very end
+    let acc=0, cut=pts.length-1;
+    for(let i=pts.length-1;i>0;i--){
+      acc+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+      if(acc>=headLen){ cut=i; break; }
+    }
+    const shaft=pts.slice(0,cut+1);
+    const tipPt=pts[pts.length-1];
+
+    const left=[],right=[];
+    for(let i=0;i<shaft.length;i++){
+      const p=shaft[i];
+      const q=shaft[Math.min(i+1,shaft.length-1)];
+      const r=shaft[Math.max(i-1,0)];
+      let dx=q[0]-r[0], dy=q[1]-r[1];
+      const L=Math.hypot(dx,dy)||1; dx/=L; dy/=L;
+      const t=i/(shaft.length-1);
+      const w=(2.4+4.4*Math.pow(t,0.75))*KS;   // tapers from thin to thick
+      left.push([p[0]-dy*w, p[1]+dx*w]);
+      right.push([p[0]+dy*w, p[1]-dx*w]);
+    }
+    const end=shaft[shaft.length-1], prev=shaft[shaft.length-2]||end;
+    let dx=end[0]-prev[0], dy=end[1]-prev[1];
+    const L=Math.hypot(dx,dy)||1; dx/=L; dy/=L;
+    const hl=[end[0]-dy*headHalf, end[1]+dx*headHalf];
+    const hr=[end[0]+dy*headHalf, end[1]-dx*headHalf];
+
+    const d = "M"+left.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")
+            + "L"+hl[0].toFixed(1)+","+hl[1].toFixed(1)
+            + "L"+tipPt[0].toFixed(1)+","+tipPt[1].toFixed(1)
+            + "L"+hr[0].toFixed(1)+","+hr[1].toFixed(1)
+            + "L"+right.reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")+"Z";
+    return {d, tip:tipPt};
+  }
+
+  /* convex hull (monotone chain) of projected cleared settlements */
+  function hull(points){
+    const p=points.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+    const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+    const lo=[],up=[];
+    for(const q of p){ while(lo.length>=2&&cross(lo[lo.length-2],lo[lo.length-1],q)<=0)lo.pop(); lo.push(q); }
+    for(let i=p.length-1;i>=0;i--){ const q=p[i];
+      while(up.length>=2&&cross(up[up.length-2],up[up.length-1],q)<=0)up.pop(); up.push(q); }
+    lo.pop(); up.pop();
+    return lo.concat(up);
+  }
+  function expand(h,pad){
+    const cx=h.reduce((s,p)=>s+p[0],0)/h.length, cy=h.reduce((s,p)=>s+p[1],0)/h.length;
+    return h.map(p=>{
+      const dx=p[0]-cx, dy=p[1]-cy, L=Math.hypot(dx,dy)||1;
+      return [p[0]+dx/L*pad, p[1]+dy/L*pad];
+    });
+  }
+  /* closed Catmull-Rom → cubic path, so the halo reads as a soft blob */
+  function smoothClosed(pts){
+    const n=pts.length; if(n<3) return "";
+    let d="M"+pts[0][0].toFixed(1)+","+pts[0][1].toFixed(1);
+    for(let i=0;i<n;i++){
+      const p0=pts[(i-1+n)%n], p1=pts[i], p2=pts[(i+1)%n], p3=pts[(i+2)%n];
+      const c1=[p1[0]+(p2[0]-p0[0])/6, p1[1]+(p2[1]-p0[1])/6];
+      const c2=[p2[0]-(p3[0]-p1[0])/6, p2[1]-(p3[1]-p1[1])/6];
+      d+="C"+c1[0].toFixed(1)+","+c1[1].toFixed(1)+" "+c2[0].toFixed(1)+","+c2[1].toFixed(1)
+        +" "+p2[0].toFixed(1)+","+p2[1].toFixed(1);
+    }
+    return d+"Z";
+  }
+  function nearestOn(pts,target){
+    let best=pts[0],bd=Infinity;
+    for(const p of pts){ const d=Math.hypot(p[0]-target[0],p[1]-target[1]); if(d<bd){bd=d;best=p;} }
+    return best;
+  }
+
+  function draw(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    if(!visible){ boxes.forEach(b=>b.el.style.display="none"); return; }
+    boxes.forEach(b=>b.el.style.display="block");
+
+    const frag=document.createDocumentFragment();
+    const add=(tag,attrs)=>{ const e=document.createElementNS(NS,tag);
+      for(const k in attrs) e.setAttribute(k,attrs[k]); frag.appendChild(e); return e; };
+
+    /* cluster halo */
+    const proj = clearedPts.map(c=>{const p=map.project(c); return [p.x,p.y];});
+    const h = expand(hull(proj), 26*kiScale());
+    const haloD = smoothClosed(h);
+    add("path",{d:haloD, fill:"rgba(11,60,234,.055)", stroke:COLORS.blue,
+      "stroke-width":Math.max(1,1.4*kiScale()), "stroke-dasharray":"5 4", "stroke-opacity":.7});
+
+    /* arrows */
+    const tips=[];
+    ARROWS.forEach(a=>{
+      const {d,tip}=arrowPath(a);
+      tips.push(tip);
+      add("path",{d, fill:COLORS.blue, "fill-opacity":.88,
+        stroke:"#FFFFFF","stroke-width":1.1,"stroke-opacity":.85,"stroke-linejoin":"round"});
+    });
+
+    /* callouts + leaders — skipped entirely on a phone, where the
+       notes live in the list under the map instead */
+    if (kiIsNarrow()){ boxes.forEach(b=>{ b.el.style.display="none"; }); svg.appendChild(frag); return; }
+    boxes.forEach(b=>{
+      const a=map.project(b.cfg.anchor);
+      const sRect=overlay.getBoundingClientRect();
+
+      /* If what the note points at has been panned or zoomed out of
+         the frame, the note has nothing to say — hide it rather than
+         pinning it to an edge with a leader running off into nothing. */
+      const slackX=sRect.width*0.30, slackY=sRect.height*0.30;
+      if(a.x < -slackX || a.x > sRect.width+slackX ||
+         a.y < -slackY || a.y > sRect.height+slackY){
+        b.el.style.display="none";
+        return;
+      }
+      b.el.style.display="block";
+
+      let x=a.x+b.cfg.offset[0], y=a.y+b.cfg.offset[1];
+      b.el.style.left=x+"px"; b.el.style.top=y+"px";
+
+      const s=sRect;
+      const margin=8;
+      let r=b.el.getBoundingClientRect();
+      let dx=0, dy=0;
+      if(r.left < s.left+margin)       dx=(s.left+margin)-r.left;
+      else if(r.right > s.right-margin) dx=(s.right-margin)-r.right;
+      if(r.top < s.top+margin)          dy=(s.top+margin)-r.top;
+      else if(r.bottom > s.bottom-margin)dy=(s.bottom-margin)-r.bottom;
+      if(dx||dy){
+        x+=dx; y+=dy;
+        b.el.style.left=x+"px"; b.el.style.top=y+"px";
+        r=b.el.getBoundingClientRect();
+      }
+
+      /* Keep the note clear of the legend, the buttons and the inset
+         map — otherwise it slides underneath them and is unreadable. */
+      const PAD=6;
+      const obstacles=["#legend","#tools","#locator"]
+        .map(function(sel){var r=kiRoot();var e=r?r.querySelector(sel):null;return e?e.getBoundingClientRect():null;})
+        .filter(Boolean);
+      for(var pass=0; pass<3; pass++){
+        var moved=false;
+        for(var oi=0; oi<obstacles.length; oi++){
+          var o=obstacles[oi];
+          if(r.right<o.left-PAD||r.left>o.right+PAD||r.bottom<o.top-PAD||r.top>o.bottom+PAD) continue;
+          var opts=[[0,(o.top-PAD)-r.bottom],[0,(o.bottom+PAD)-r.top],
+                    [(o.left-PAD)-r.right,0],[(o.right+PAD)-r.left,0]];
+          var best=null, bestD=Infinity;
+          for(var k=0;k<opts.length;k++){
+            var px=opts[k][0], py=opts[k][1];
+            if(r.left+px < s.left+margin || r.right+px > s.right-margin) continue;
+            if(r.top+py  < s.top+margin  || r.bottom+py > s.bottom-margin) continue;
+            var d=Math.abs(px)+Math.abs(py);
+            if(d<bestD){bestD=d;best=[px,py];}
+          }
+          if(best){
+            x+=best[0]; y+=best[1];
+            b.el.style.left=x+"px"; b.el.style.top=y+"px";
+            r=b.el.getBoundingClientRect();
+            moved=true;
+          }
+        }
+        if(!moved) break;
+      }
+
+      const box={x:r.left-s.left, y:r.top-s.top, w:r.width, h:r.height};
+      const cx=box.x+box.w/2, cy=box.y+box.h/2;
+
+      let targets=[];
+      if(b.cfg.leaderTo==="hull") targets=[nearestOn(h,[cx,cy])];
+      else targets=tips.map(t=>t);
+
+      targets.forEach(t=>{
+        // start the leader on the box edge facing the target
+        const dx2=t[0]-cx, dy2=t[1]-cy;
+        const sx=Math.abs(dx2)>Math.abs(dy2)*box.w/box.h
+          ? cx+Math.sign(dx2)*box.w/2
+          : cx+dx2/Math.abs(dy2||1)*box.h/2;
+        const sy=Math.abs(dx2)>Math.abs(dy2)*box.w/box.h
+          ? cy+dy2/Math.abs(dx2||1)*box.w/2
+          : cy+Math.sign(dy2)*box.h/2;
+        add("line",{x1:sx,y1:sy,x2:t[0],y2:t[1],
+          stroke:"#5A5A55","stroke-width":1.8,"stroke-opacity":.85});
+        add("circle",{cx:t[0],cy:t[1],r:2.6,fill:"#5A5A55","fill-opacity":.85});
+      });
+    });
+
+    svg.appendChild(frag);
+  }
+
+  map.on("move",draw); map.on("resize",draw);
+  requestAnimationFrame(()=>requestAnimationFrame(draw));
+
+  kiEl("btn-reset").onclick=()=>{
+    map._userMoved=false;
+    map.fitBounds(kiBounds(),{padding:paddingFor(map.getContainer().clientWidth,map.getContainer().clientHeight),duration:700});
+  };
+  kiEl("btn-ann").onclick=(e)=>{
+    visible=!visible; e.target.textContent = visible? "Hide notes":"Show notes"; draw();
+  };
+}
+}
+
+  /* Boot, and re-boot if the framework re-renders the article and
+     throws away the canvas we just built. */
+  /* Put any failure on the page. On a phone there is no console to
+     look at, so a silent blank rectangle is the worst outcome. */
+  var kiLog = [];
+  function kiMsg(text){
+    if (kiLog.indexOf(text) === -1) kiLog.push(text);
+    var host = kiEl("map");
+    if (!host) return;
+    var box = kiEl("ki-map-msg");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "ki-map-msg";
+      box.style.cssText = "position:absolute;left:0;right:0;top:0;bottom:0;display:flex;" +
+        "flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;" +
+        "text-align:left;padding:20px;overflow:auto;-webkit-overflow-scrolling:touch;" +
+        "background:#F5F5F2;color:#333;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;z-index:6";
+      host.appendChild(box);
+    }
+    box.textContent = "";
+    for (var i=0;i<kiLog.length;i++){
+      var line = document.createElement("div");
+      line.textContent = (i+1) + ". " + kiLog[i];
+      box.appendChild(line);
+    }
+  }
+
+
+  /* The notes as a list under the map, for narrow screens. Built up
+     front, so they are there even if the map itself never starts. */
+  function kiBuildNotesList(){
+    var wrap = kiEl("wrap");
+    if (!wrap) return;
+    var old = kiEl("ki-notes-mobile");
+    if (old) old.remove();
+    var list = document.createElement("div");
+    list.id = "ki-notes-mobile";
+    for (var i=0;i<NOTES.length;i++){
+      var row = document.createElement("div");
+      row.className = "n";
+      row.innerHTML = NOTES[i].html;
+      list.appendChild(row);
+    }
+    var foot = wrap.querySelector("footer");
+    if (foot) wrap.insertBefore(list, foot); else wrap.appendChild(list);
+  }
+  function boot(){
+    var root = document.getElementById("ki-map-embed");
+    try { if (root && !kiEl("ki-notes-mobile")) kiBuildNotesList(); } catch(e){}
+
+    /* Ghost renders an HTML card inside a sandboxed about:blank /
+       srcdoc frame while you are in the editor, and blocks its
+       scripts. Nothing we do can make the map appear there, so say
+       which window this is instead of timing out mysteriously. */
+    var inSandbox = (location.protocol === "about:");
+    if (!inSandbox) {
+      try { inSandbox = !!(window.frameElement && window.frameElement.hasAttribute("srcdoc")); }
+      catch (e) { /* cross-origin frame: not the editor */ }
+    }
+    if (inSandbox) {
+      kiMsg("This is the Ghost editor preview. It runs HTML cards in a sandboxed frame with scripts disabled, so the map cannot render here — this is expected, not a fault. Click Preview at the top right, or open the published post URL, to see it.");
+      return;
+    }
+
+  /* Opened straight from disk? Say so plainly — Mapbox cannot start
+     under file:// because the browser blocks its worker, and no amount
+     of retrying will change that. */
+  if (location.protocol === "file:") {
+    kiMsg("Opened as a local file (file://). Mapbox cannot start here — the browser blocks its worker. Serve it over http(s): in the file's folder run  python3 -m http.server 8000  and open http://localhost:8000/");
+    return;
+  }
+
+    if (!root || root.querySelector(".mapboxgl-canvas")) return;
+    if (typeof mapboxgl === "undefined") { setTimeout(boot, 200); return; }
+    if (typeof mapboxgl.supported === "function" && !mapboxgl.supported()) {
+      kiMsg("This browser cannot display the map: WebGL is unavailable or disabled.");
+      return;
+    }
+    try { start(MAPBOX_TOKEN); }
+    catch (e) {
+      console.error("KI map:", e);
+      kiMsg("Map failed to start — " + (e && e.message ? e.message : e));
+    }
+  }
+
+  /* The article's framework can re-render and take our canvas with it,
+     which is what makes the map show up and then vanish. Watch for
+     that and rebuild, for the first minute. */
+  function kiRestart(){
+    var root = kiRoot();
+    if (!root || root.querySelector(".mapboxgl-canvas")) return;
+    if (location.protocol === "about:" || typeof mapboxgl === "undefined") return;
+    try { if (window.__kiMap && window.__kiMap.remove) window.__kiMap.remove(); } catch(e){}
+    window.__kiMap = null;
+    window.__kiStarting = false;
+    try { start(MAPBOX_TOKEN); } catch(e){ console.error("KI map rebuild:", e); }
+  }
+  var kiHeals = 0;
+  var kiHealTimer = setInterval(function(){
+    if (++kiHeals > 30) { clearInterval(kiHealTimer); return; }
+    kiRestart();
+  }, 2000);
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) setTimeout(kiRestart, 300);
+  });
+
+  /* Only after healing has had its chance do we admit defeat. */
+  setTimeout(function(){
+    var root = document.getElementById("ki-map-embed");
+    if (!root || root.querySelector(".mapboxgl-canvas")) return;
+    var host = kiEl("map");
+    var w = host ? Math.round(host.getBoundingClientRect().width) : 0;
+    var h = host ? Math.round(host.getBoundingClientRect().height) : 0;
+    kiMsg("timeout 22s — protocol=" + location.protocol +
+          ", mapboxgl=" + (typeof mapboxgl) +
+          ", container=" + w + "x" + h +
+          ", webgl=" + (typeof mapboxgl !== "undefined" && mapboxgl.supported ? mapboxgl.supported() : "?") +
+          ", token=" + (typeof mapboxgl !== "undefined" && mapboxgl.accessToken ? "set" : "EMPTY") +
+          ", styleLoaded=" + (window.__kiMap && window.__kiMap.isStyleLoaded ? window.__kiMap.isStyleLoaded() : "n/a") +
+          ", #map on page=" + document.querySelectorAll("#map, [id=map]").length +
+          ", embeds=" + document.querySelectorAll("#ki-map-embed, [id=ki-map-embed]").length +
+          ", canvasAnywhere=" + document.querySelectorAll(".mapboxgl-canvas").length +
+          ", rootHasMap=" + !!(kiEl("map")));
+  }, 22000);
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+  setTimeout(boot, 1500);
+  setTimeout(boot, 4000);
+})();
+</script>
+
+<script>
+/* Tell the host page our real height so the iframe can size itself. */
+(function(){
+  var last = 0;
+  function report(){
+    var el = document.getElementById("ki-map-embed") || document.body;
+    var h = Math.ceil(el.getBoundingClientRect().height) + 2;
+    if (!h || Math.abs(h - last) < 2) return;
+    last = h;
+    try { parent.postMessage({ kind: "ki-map-height", height: h }, "*"); } catch(e){}
+  }
+  window.addEventListener("load", function(){ report(); setTimeout(report,400); setTimeout(report,1500); });
+  window.addEventListener("resize", function(){ setTimeout(report,120); });
+  if (typeof ResizeObserver !== "undefined") {
+    var el = document.getElementById("ki-map-embed");
+    if (el) new ResizeObserver(report).observe(el);
+  }
+  setTimeout(report, 60);
+})();
+</script>
+</body>
+</html>
