@@ -1,0 +1,25 @@
+<!-- =============================================================
+     KI interactive map — Ukrainian counterattacks, Sept. 15, 2026
+     Paste into ONE Ghost HTML card. Replace the src with the real URL
+     of donetsk-map-standalone.html once it is hosted.
+     ============================================================= -->
+<iframe id="ki-map-frame-20260915"
+        src="https://REPLACE-ME.example.com/maps/donetsk-map-standalone.html"
+        title="Ukrainian counterattacks in northern Donetsk Oblast"
+        loading="lazy"
+        style="width:100%;height:760px;border:0;display:block;margin:0 0 30px"
+        scrolling="no"></iframe>
+<script>
+(function(){
+  var FRAME_ID = "ki-map-frame-20260915";
+  window.addEventListener("message", function(e){
+    var d = e.data;
+    if (!d || d.kind !== "ki-map-height" || !d.height) return;
+    var f = document.getElementById(FRAME_ID);
+    if (!f) return;
+    /* only accept a height from our own frame */
+    if (f.contentWindow !== e.source) return;
+    f.style.height = Math.max(320, Math.min(1400, d.height)) + "px";
+  });
+})();
+</script>
