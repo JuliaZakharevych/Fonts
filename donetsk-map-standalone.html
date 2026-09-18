@@ -151,10 +151,31 @@
       the block grows to fit header + map + footer.
    2. The site forces width:100% on images inside article content,
       which blew the logo up and pushed it off the right edge.
+   3. #stage used to size itself from vh (the iframe's OWN assigned
+      height) — a circular dependency: the parent sizes the iframe
+      from the child's reported height, and the child sized itself
+      from the iframe's height. That produced a stale gap at the
+      bottom on desktop and, since mobile vh jumps as the browser
+      chrome shows/hides, visible cropping on phones (stage has
+      overflow:hidden). Height now comes from the stage's own WIDTH
+      via aspect-ratio, which is always known immediately and never
+      depends on the iframe's current height.
    ---------------------------------------------------------------- */
 #ki-map-embed{height:auto !important;margin:0 0 30px}
 #ki-map-embed #wrap{height:auto !important;min-height:0 !important}
-#ki-map-embed #stage{height:clamp(380px,66vh,620px) !important;min-height:380px !important;flex:0 0 auto !important}
+#ki-map-embed #stage{
+  height:auto !important;
+  aspect-ratio:5/3 !important;
+  min-height:360px !important;
+  max-height:640px !important;
+  flex:0 0 auto !important;
+}
+@media (max-width:760px){
+  #ki-map-embed #stage{aspect-ratio:4/3 !important;min-height:320px !important}
+}
+@media (max-width:420px){
+  #ki-map-embed #stage{aspect-ratio:1/1 !important;min-height:300px !important}
+}
 
 #ki-map-embed footer{flex-wrap:wrap;row-gap:8px;align-items:flex-end}
 #ki-map-embed footer p{margin:0;flex:1 1 220px;min-width:0}
