@@ -151,10 +151,31 @@
       the block grows to fit header + map + footer.
    2. The site forces width:100% on images inside article content,
       which blew the logo up and pushed it off the right edge.
+   3. #stage used to size itself from vh (the iframe's OWN assigned
+      height) — a circular dependency: the parent sizes the iframe
+      from the child's reported height, and the child sized itself
+      from the iframe's height. That produced a stale gap at the
+      bottom on desktop and, since mobile vh jumps as the browser
+      chrome shows/hides, visible cropping on phones (stage has
+      overflow:hidden). Height now comes from the stage's own WIDTH
+      via aspect-ratio, which is always known immediately and never
+      depends on the iframe's current height.
    ---------------------------------------------------------------- */
 #ki-map-embed{height:auto !important;margin:0 0 30px}
 #ki-map-embed #wrap{height:auto !important;min-height:0 !important}
-#ki-map-embed #stage{height:clamp(380px,66vh,620px) !important;min-height:380px !important;flex:0 0 auto !important}
+#ki-map-embed #stage{
+  height:auto !important;
+  aspect-ratio:5/3 !important;
+  min-height:360px !important;
+  max-height:640px !important;
+  flex:0 0 auto !important;
+}
+@media (max-width:760px){
+  #ki-map-embed #stage{aspect-ratio:4/3 !important;min-height:320px !important}
+}
+@media (max-width:420px){
+  #ki-map-embed #stage{aspect-ratio:1/1 !important;min-height:300px !important}
+}
 
 #ki-map-embed footer{flex-wrap:wrap;row-gap:8px;align-items:flex-end}
 #ki-map-embed footer p{margin:0;flex:1 1 220px;min-width:0}
@@ -266,6 +287,17 @@
 #ki-map-embed #ki-notes-layer{position:absolute;left:0;right:0;top:0;bottom:0;
   pointer-events:none;overflow:hidden;z-index:5}
 #ki-map-embed #ki-notes-layer .callout{pointer-events:auto}
+
+/* Numbered notes: the pin on the map and the number in the list are
+   the same mark, so the reader can tell what each note points at. */
+@media (max-width:560px){
+  #ki-map-embed #ki-notes-mobile .n{padding:0 0 0 24px !important}
+  #ki-map-embed #ki-notes-mobile .n:before{display:none !important}
+  #ki-map-embed #ki-notes-mobile .n .num{
+    position:absolute;left:0;top:0;width:17px;height:17px;border-radius:50%;
+    background:#0B3CEA;color:#fff;font-size:10.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;line-height:1}
+}
 </style>
 
 <div id="ki-map-embed">
@@ -874,7 +906,27 @@ function buildAnnotations(map){
 
     /* callouts + leaders — skipped entirely on a phone, where the
        notes live in the list under the map instead */
-    if (kiIsNarrow()){ boxes.forEach(b=>{ b.el.style.display="none"; }); svg.appendChild(frag); return; }
+    if (kiIsNarrow()){
+      /* A bare list under the map does not say what it refers to. Put a
+         numbered pin on the thing itself and the same number in front
+         of the note, so the two read as one. */
+      boxes.forEach(b=>{ b.el.style.display="none"; });
+      const cx0 = h.reduce((a,p)=>a+p[0],0)/h.length;
+      const cy0 = h.reduce((a,p)=>a+p[1],0)/h.length;
+      const tipX = tips.length ? tips.reduce((a,p)=>a+p[0],0)/tips.length : 0;
+      const tipY = tips.length ? tips.reduce((a,p)=>a+p[1],0)/tips.length : 0;
+      const pins = [[cx0,cy0],[tipX+22,tipY-16]];
+      pins.forEach(function(p,i){
+        if(!isFinite(p[0])||!isFinite(p[1])) return;
+        add("circle",{cx:p[0],cy:p[1],r:10,fill:COLORS.blue,stroke:"#FFFFFF","stroke-width":2.2});
+        const t=add("text",{x:p[0],y:p[1]+4,"text-anchor":"middle",
+          "font-size":"12","font-weight":"700",fill:"#FFFFFF",
+          "font-family":"'e-Ukraine',-apple-system,sans-serif"});
+        t.textContent=String(i+1);
+      });
+      svg.appendChild(frag);
+      return;
+    }
     boxes.forEach(b=>{
       const a=map.project(b.cfg.anchor);
       const sRect=overlay.getBoundingClientRect();
@@ -1016,7 +1068,7 @@ function buildAnnotations(map){
     for (var i=0;i<NOTES.length;i++){
       var row = document.createElement("div");
       row.className = "n";
-      row.innerHTML = NOTES[i].html;
+      row.innerHTML = '<span class="num">' + (i+1) + '</span>' + NOTES[i].html;
       list.appendChild(row);
     }
     var foot = wrap.querySelector("footer");
@@ -1064,18 +1116,25 @@ function buildAnnotations(map){
   /* The article's framework can re-render and take our canvas with it,
      which is what makes the map show up and then vanish. Watch for
      that and rebuild, for the first minute. */
+  /* Every rebuild is a fresh Map object, and Mapbox counts each one as
+     a billable map load against the account's monthly allowance. So
+     heal a couple of times, then stop — a rebuild loop would quietly
+     burn through the quota one reader at a time. */
+  var kiRebuilds = 0, kiHealTimer = null;
   function kiRestart(){
     var root = kiRoot();
     if (!root || root.querySelector(".mapboxgl-canvas")) return;
     if (location.protocol === "about:" || typeof mapboxgl === "undefined") return;
+    if (kiRebuilds >= 3) { clearInterval(kiHealTimer); return; }
+    kiRebuilds++;
     try { if (window.__kiMap && window.__kiMap.remove) window.__kiMap.remove(); } catch(e){}
     window.__kiMap = null;
     window.__kiStarting = false;
     try { start(MAPBOX_TOKEN); } catch(e){ console.error("KI map rebuild:", e); }
   }
   var kiHeals = 0;
-  var kiHealTimer = setInterval(function(){
-    if (++kiHeals > 30) { clearInterval(kiHealTimer); return; }
+  kiHealTimer = setInterval(function(){
+    if (++kiHeals > 20) { clearInterval(kiHealTimer); return; }
     kiRestart();
   }, 2000);
   document.addEventListener("visibilitychange", function(){
@@ -1109,10 +1168,6 @@ function buildAnnotations(map){
 </script>
 
 <script>
-/* Report our height to the host page so the iframe can size itself.
-   Deliberately coarse: rounding to 10px and ignoring small changes
-   keeps this from nudging the layout, which used to keep the map
-   permanently "resizing" and stop it ever finishing its load. */
 (function(){
   var last = 0;
   function report(){
