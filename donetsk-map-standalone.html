@@ -137,8 +137,8 @@
 #ki-map-embed #locator .cap{display:none}
 #ki-map-embed #legend .row{gap:6px}
 #ki-map-embed #tools{flex-direction:column;align-items:flex-end}
-#ki-map-embed footer.srcRow{flex-direction:column;align-items:flex-start;gap:6px;padding:12px 14px 16px}
-#ki-map-embed footer .logo{height:12px;align-self:flex-start}
+#ki-map-embed footer.srcRow{gap:8px;padding:12px 14px 16px}
+#ki-map-embed footer .logo{height:12px}
 #ki-map-embed #tokengate .box{padding:18px;max-width:100%}
 #ki-map-embed #tokengate h3{font-size:14.5px}
 #ki-map-embed #tokengate p{font-size:12.5px}
@@ -178,7 +178,7 @@
 }
 
 #ki-map-embed footer{flex-wrap:wrap;row-gap:8px;align-items:flex-end}
-#ki-map-embed footer p{margin:0;flex:1 1 220px;min-width:0}
+#ki-map-embed footer p{margin:0;flex:1 1 auto;min-width:0}
 /* Ghost strips class="logo" off the <img>, so target the element itself */
 #ki-map-embed footer img{
   height:15px !important;
@@ -297,35 +297,6 @@
     position:absolute;left:0;top:0;width:17px;height:17px;border-radius:50%;
     background:#0B3CEA;color:#fff;font-size:10.5px;font-weight:700;
     display:flex;align-items:center;justify-content:center;line-height:1}
-}
-
-/* Fix: on narrow screens (below 760px) the footer stayed in a row
-   with justify-content:space-between, so the source text and the
-   logo were pushed to opposite ends with a large empty gap between
-   them. Stack them instead, matching the layout already used below
-   420px. */
-@media (max-width:760px){
-  #ki-map-embed footer.srcRow{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:8px;
-  }
-  #ki-map-embed footer .logo{align-self:flex-start}
-}
-
-/* Fix: on mobile the notes list under the map sat with no bottom
-   margin of its own, and the footer above it only had a thin
-   top-padding — the two blocks ended up touching, so the source
-   line read as running straight into the last note. Give the list
-   its own bottom margin and give the footer a bit more breathing
-   room above its top border on narrow screens. */
-#ki-map-embed #ki-notes-mobile{margin:0 0 4px}
-@media (max-width:560px){
-  #ki-map-embed #ki-notes-mobile{padding:9px 0 2px;margin:0 0 6px}
-  #ki-map-embed footer.srcRow{padding-top:14px !important}
-}
-@media (max-width:420px){
-  #ki-map-embed footer.srcRow{padding-top:12px !important}
 }
 </style>
 
@@ -666,7 +637,7 @@ function kiAddAllInner(){
   /* --- river labels -------------------------------------------------- */
   map.addLayer({
     id:"ki-river-label", type:"symbol", source:"composite", "source-layer":"waterway",
-    filter:["match",["coalesce",["get","name_en"],["get","name"]],""],RIVER_NAMES,true,false],
+    filter:["match",["coalesce",["get","name_en"],["get","name"],""],RIVER_NAMES,true,false],
     layout:{
       "symbol-placement":"line",
       "text-field":["coalesce",["get","name_en"],["get","name"]],
